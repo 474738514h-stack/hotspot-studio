@@ -66,17 +66,17 @@ export function StepNews() {
                 !selected && news.risk === "blocked" && "border-l-orange-400",
               )}
             >
-              <div className="flex items-center gap-1.5 text-[11px]">
+              {selected && (
+                <span className="absolute -top-0.5 -right-0.5 z-10 inline-flex items-center gap-1 rounded-tr-xl rounded-bl-2xl bg-[#6d4aff] px-2.5 py-1.5 text-[12px] font-medium leading-none text-white">
+                  <CheckIcon className="size-3.5" />
+                  已选为爆款热点
+                </span>
+              )}
+              <div className={cn("flex items-center gap-1.5 text-[11px]", selected && "pr-32")}>
                 {news.trend === "up" && <span className="font-semibold text-emerald-600">升</span>}
                 {news.trend === "new" && <span className="rounded bg-emerald-50 px-1 font-semibold text-emerald-600">新</span>}
                 <span className="font-medium text-sky-600">实时</span>
                 <span className="min-w-0 flex-1 truncate text-[#9aa1ad]">{metaLine(news)}</span>
-                {selected && (
-                  <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[12px] font-semibold text-[#6d4aff] ring-1 ring-[#d9d0ff]">
-                    <CheckIcon className="size-3.5" />
-                    已选为爆款热点
-                  </span>
-                )}
               </div>
               <h2 className="mt-2 text-[15px] leading-snug font-semibold text-[#1c1f2a]">{news.title}</h2>
               <p className="mt-1.5 line-clamp-2 text-[12.5px] leading-relaxed text-[#6b7080]">{news.summary}</p>
