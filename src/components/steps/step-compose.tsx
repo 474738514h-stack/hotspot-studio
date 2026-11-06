@@ -44,12 +44,12 @@ export function StepCompose() {
   }
 
   return (
-    <div className={cn("min-h-0 flex-1 [scrollbar-gutter:stable]", state.copies.length ? "flex flex-col overflow-hidden" : "overflow-y-auto pb-6")}>
+    <div className="min-h-0 flex-1 overflow-y-auto pb-6 [scrollbar-gutter:stable]">
       <h1 className="text-xl font-semibold tracking-tight">Step 4 · 创作文案</h1>
       <p className="mt-1 text-sm text-[#6b7080]">基于“热点 + 商品”组合，由 LLM 生成微博风格营销文案（多版本可微调）</p>
 
-      <div className={cn("mt-4 grid w-full gap-4 lg:grid-cols-[320px_minmax(0,1fr)]", state.copies.length ? "min-h-0 flex-1 items-stretch" : "items-start")}>
-        <aside className={cn("rounded-2xl border border-[#e6e8ee] bg-white p-4", state.copies.length ? "max-h-full overflow-y-auto" : "lg:sticky lg:top-4")}>
+      <div className="mt-4 grid w-full items-start gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
+        <aside className="rounded-2xl border border-[#e6e8ee] bg-white p-4">
           <div className="text-[13px] font-medium text-[#1c1f2a]">
             创作素材 <span className="ml-1 text-[11px] font-semibold tracking-[0.08em] text-[#b0b5c0]">INGREDIENTS</span>
           </div>
@@ -98,6 +98,30 @@ export function StepCompose() {
               )
             })}
           </div>
+          <div className="mt-4 text-[13px] font-medium text-[#1c1f2a]">篇幅</div>
+          <TonePills
+            value={state.length}
+            options={[
+              { value: "short" as CopyLength, label: "短" },
+              { value: "medium" as CopyLength, label: "中" },
+              { value: "long" as CopyLength, label: "长" },
+            ]}
+            onChange={workflow.setLength}
+          />
+          <div className="mt-3 text-[13px] font-medium text-[#1c1f2a]">表情</div>
+          <TonePills
+            value={state.emoji}
+            options={[
+              { value: "low" as EmojiLevel, label: "克制" },
+              { value: "mid" as EmojiLevel, label: "标准" },
+              { value: "high" as EmojiLevel, label: "热闹" },
+            ]}
+            onChange={workflow.setEmoji}
+          />
+          <label className="mt-3 flex items-center gap-2 text-sm text-[#1c1f2a]">
+            <input type="checkbox" checked={state.includePrice} onChange={(event) => workflow.setIncludePrice(event.target.checked)} className="size-4 accent-[#6d4aff]" />
+            写入价格
+          </label>
           <Button className="mt-4 h-11 w-full rounded-xl text-base" disabled={state.generating} onClick={() => void workflow.generate()}>
             {state.generating ? <Loader2Icon className="animate-spin" /> : null}
             {state.copies.length ? "重新生成文案" : "生成文案"}
@@ -121,19 +145,9 @@ export function StepCompose() {
             <button type="button" className="mx-0.5 text-[#6d4aff]" onClick={workflow.openAdmin}>后台管理</button>
             查看与修改。共 3 个版本风格并发生成。
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[#f0f1f4] pt-3">
-            <span className="text-[11px] text-[#8b909c]">篇幅</span>
-            <Segment value={state.length} options={[{ value: "short" as CopyLength, label: "短" }, { value: "medium" as CopyLength, label: "中" }, { value: "long" as CopyLength, label: "长" }]} onChange={workflow.setLength} />
-            <span className="text-[11px] text-[#8b909c]">表情</span>
-            <Segment value={state.emoji} options={[{ value: "low" as EmojiLevel, label: "克制" }, { value: "mid" as EmojiLevel, label: "标准" }, { value: "high" as EmojiLevel, label: "热闹" }]} onChange={workflow.setEmoji} />
-            <label className="ml-auto flex items-center gap-1.5 text-[11px] text-[#6b7080]">
-              <input type="checkbox" checked={state.includePrice} onChange={(event) => workflow.setIncludePrice(event.target.checked)} className="size-3.5 accent-[#6d4aff]" />
-              写入价格
-            </label>
-          </div>
         </aside>
 
-        <section className={cn(state.copies.length && "flex min-h-0 flex-col")}>
+        <section>
           {state.generating ? (
             <GenerateLoader />
           ) : state.copies.length === 0 ? (
@@ -200,7 +214,7 @@ function VersionBoard() {
   }
 
   return (
-    <article className="flex h-full min-h-[520px] flex-col overflow-hidden rounded-xl border border-[#e6e8ee] bg-white">
+    <article className="rounded-xl border border-[#e6e8ee] bg-white">
       <div className="flex gap-1 overflow-x-auto border-b border-[#eef0f3] px-3 pt-2">
         {state.copies.map((item) => {
           const active = item.id === copy.id
@@ -222,16 +236,16 @@ function VersionBoard() {
           )
         })}
       </div>
-      <div className="flex min-h-0 flex-1 flex-col px-4 py-4">
+      <div className="px-4 py-4">
         {busy ? (
-          <div className="flex min-h-48 flex-1 items-center gap-2 rounded-xl bg-[#f5f6fa] px-4 text-sm text-[#6b7080]">
+          <div className="flex min-h-40 items-center gap-2 rounded-xl bg-[#f5f6fa] px-4 text-sm text-[#6b7080]">
             <Loader2Icon className="size-4 animate-spin text-[#6d4aff]" />
             正在重写这一版…
           </div>
         ) : editing ? (
-          <Textarea value={copy.text} onChange={(event) => updateCopy(copy.id, event.target.value)} className="min-h-0 flex-1 font-sans text-sm leading-7" />
+          <Textarea value={copy.text} onChange={(event) => updateCopy(copy.id, event.target.value)} className="min-h-64 font-sans text-sm leading-7" />
         ) : (
-          <div className="min-h-0 flex-1 overflow-y-auto rounded-xl bg-[#f5f6fa] px-4 py-4">
+          <div className="rounded-xl bg-[#f5f6fa] px-4 py-4">
             <p className="text-sm leading-8 whitespace-pre-wrap text-[#1c1f2a]">{copy.text}</p>
           </div>
         )}
@@ -316,15 +330,18 @@ function GenerateLoader() {
   )
 }
 
-function Segment<T extends string>({ value, options, onChange }: { value: T; options: { value: T; label: string }[]; onChange: (value: T) => void }) {
+function TonePills<T extends string>({ value, options, onChange }: { value: T; options: { value: T; label: string }[]; onChange: (value: T) => void }) {
   return (
-    <div className="flex flex-wrap gap-1">
+    <div className="mt-2 flex flex-wrap gap-2">
       {options.map((option) => (
         <button
           key={option.value}
           type="button"
           onClick={() => onChange(option.value)}
-          className={cn("rounded-md px-2 py-1 text-xs", value === option.value ? "bg-[#6d4aff] text-white" : "bg-[#f4f5f7] text-[#4b5160]")}
+          className={cn(
+            "rounded-full px-3.5 py-1.5 text-sm",
+            value === option.value ? "bg-[#6d4aff] font-medium text-white" : "border border-[#e6e8ee] bg-white text-[#1c1f2a]",
+          )}
         >
           {option.label}
         </button>
