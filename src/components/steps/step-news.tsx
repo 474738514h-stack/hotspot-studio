@@ -94,7 +94,7 @@ export function StepNews() {
                   <span className="relative h-1 w-12 overflow-hidden rounded-full bg-[#e6e8ee]">
                     <span className="absolute inset-y-0 left-0 rounded-full bg-orange-400" style={{ width: `${news.heatScore}%` }} />
                   </span>
-                  <span className="text-lg leading-none font-semibold text-orange-500 tabular-nums">{news.heatScore}</span>
+                  <span className="text-sm font-bold text-orange-500 tabular-nums">{news.heatScore}</span>
                 </div>
                 <span className="truncate text-[11px] text-[#6d4aff]">#{news.hashtag}#</span>
               </div>

@@ -2,7 +2,7 @@
 
 import { ProductArt } from "@/components/product-art"
 import { Button } from "@/components/ui/button"
-import { formatPrice } from "@/lib/format"
+import { Price } from "@/components/price"
 import { matchProducts } from "@/lib/matching"
 import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED, CARD_SHADOW, CHROME_BUTTON } from "@/lib/steps"
 import { useWorkflow } from "@/lib/workflow"
@@ -68,8 +68,8 @@ export function StepSuggest() {
               <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-[#6d4aff]">{match.reasons[0]}</p>
               <div className="mt-auto flex items-end justify-between pt-3">
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-base font-semibold">{formatPrice(match.product.price)}</span>
-                  <span className="text-xs text-[#c0c4cc] line-through">{formatPrice(match.product.originalPrice)}</span>
+                  <Price value={match.product.price} className="text-base" />
+                  <Price value={match.product.originalPrice} strike className="text-xs text-[#c0c4cc]" />
                 </div>
                 <span className="text-[11px] text-[#9aa1ad]">{match.product.category}</span>
               </div>

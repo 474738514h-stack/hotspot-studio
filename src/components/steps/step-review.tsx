@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { BadgeCheckIcon, SendIcon } from "lucide-react"
+import { Price } from "@/components/price"
 import { ProductArt } from "@/components/product-art"
 import { Button } from "@/components/ui/button"
 import {
@@ -84,7 +85,7 @@ export function StepReview() {
                 <ProductArt id={product.id} className="h-16 w-full" />
                 <div className="px-1.5 py-1">
                   <div className="truncate text-[11px]">{product.name}</div>
-                  {state.includePrice && <div className="text-[11px] text-[#f97316]">¥{product.price}</div>}
+                  {state.includePrice && <Price value={product.price} className="text-[11px] text-[#f97316]" />}
                 </div>
               </div>
             ))}

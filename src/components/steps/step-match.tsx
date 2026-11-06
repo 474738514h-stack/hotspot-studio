@@ -7,7 +7,8 @@ import { ScoreRing } from "@/components/score-ring"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED, CARD_SHADOW, CHROME_BUTTON } from "@/lib/steps"
-import { formatPrice, formatSales } from "@/lib/format"
+import { Price } from "@/components/price"
+import { formatSales } from "@/lib/format"
 import { matchProducts } from "@/lib/matching"
 import { PRODUCTS } from "@/lib/products"
 import { useWorkflow } from "@/lib/workflow"
@@ -100,8 +101,8 @@ export function StepMatch() {
                   {meta && <ScoreRing score={meta.score} size={40} />}
                 </div>
                 <div className="mt-1 flex items-baseline gap-2">
-                  <span className="font-semibold">{formatPrice(product.price)}</span>
-                  <span className="text-xs text-[#b0b5c0] line-through">{formatPrice(product.originalPrice)}</span>
+                  <Price value={product.price} />
+                  <Price value={product.originalPrice} strike className="text-xs text-[#b0b5c0]" />
                 </div>
                 <div className="mt-1 text-[11px] text-[#8b909c]">月销 {formatSales(product.sales)} · {product.rating} 分</div>
                 <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-[#4b5160]">{meta?.reason}</p>

@@ -13,7 +13,8 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { ProductArt } from "@/components/product-art"
 import { reviewCopy } from "@/lib/compliance"
-import { copyText, formatPrice } from "@/lib/format"
+import { Price } from "@/components/price"
+import { copyText } from "@/lib/format"
 import { toneLabel } from "@/lib/copy/engine"
 import { CARD_SHADOW, ENGINE_OPTIONS } from "@/lib/steps"
 import type { CopyLength, EmojiLevel } from "@/lib/types"
@@ -64,7 +65,7 @@ export function StepCompose() {
                 <div className="min-w-0">
                   <div className="truncate text-sm font-semibold text-[#1c1f2a]">{product.name}</div>
                   <div className="mt-0.5 truncate text-[13px]">
-                    <span className="font-medium text-[#e11d48]">{formatPrice(product.price)}</span>
+                    <Price value={product.price} className="text-[#e11d48]" />
                     <span className="text-[#8b909c]"> · {product.points[0]}</span>
                   </div>
                 </div>
