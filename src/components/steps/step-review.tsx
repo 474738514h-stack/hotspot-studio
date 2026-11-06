@@ -84,7 +84,7 @@ export function StepReview() {
                 <ProductArt id={product.id} className="h-16 w-full" />
                 <div className="px-1.5 py-1">
                   <div className="truncate text-[11px]">{product.name}</div>
-                  <div className="text-[11px] text-[#f97316]">¥{product.price}</div>
+                  {state.includePrice && <div className="text-[11px] text-[#f97316]">¥{product.price}</div>}
                 </div>
               </div>
             ))}
@@ -169,9 +169,9 @@ export function StepReview() {
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-2.5">
-      <dt className="shrink-0 text-[#8b909c]">{label}</dt>
-      <dd className="text-right text-[#1c1f2a]">{value}</dd>
+    <div className="grid grid-cols-[72px_minmax(0,1fr)] items-start gap-4 py-2.5">
+      <dt className="text-[#8b909c]">{label}</dt>
+      <dd className="text-left text-[#1c1f2a]">{value}</dd>
     </div>
   )
 }

@@ -108,7 +108,7 @@ function CampaignLine({
     )
   }
   return (
-    <div className="grid grid-cols-1 items-center gap-2 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 items-center gap-2 rounded-xl bg-white px-4 py-3 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
       <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs">
         <span className="text-[#8b909c]">当前话题</span>
         <button type="button" className="max-w-[280px] truncate font-medium text-[#f97316]" onClick={onJump}>
