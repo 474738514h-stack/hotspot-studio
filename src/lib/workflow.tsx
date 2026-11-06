@@ -60,6 +60,7 @@ interface WorkflowState {
   emoji: EmojiLevel
   includePrice: boolean
   generatedAt: string | null
+  generateMs: number | null
 }
 
 type Action =
@@ -95,11 +96,12 @@ const initialState: WorkflowState = {
   emoji: "mid",
   includePrice: true,
   generatedAt: null,
+  generateMs: null,
 }
 
 function clearDownstream(): Pick<
   WorkflowState,
-  "selectedProductIds" | "copies" | "activeCopyId" | "review" | "publish" | "publishedAt" | "publishId" | "engagement" | "generatedAt"
+  "selectedProductIds" | "copies" | "activeCopyId" | "review" | "publish" | "publishedAt" | "publishId" | "engagement" | "generatedAt" | "generateMs"
 > {
   return {
     selectedProductIds: [],
@@ -111,6 +113,7 @@ function clearDownstream(): Pick<
     publishId: null,
     engagement: { reposts: 0, comments: 0, likes: 0 },
     generatedAt: null,
+    generateMs: null,
   }
 }
 
@@ -134,6 +137,7 @@ function reducer(state: WorkflowState, action: Action): WorkflowState {
               review: "idle" as const,
               publish: state.publish === "sent" ? state.publish : ("idle" as const),
               generatedAt: null,
+              generateMs: null,
             }
           : {}),
       }
@@ -180,6 +184,7 @@ function sanitize(raw: unknown): Partial<WorkflowState> | null {
   if (data.emoji === "low" || data.emoji === "mid" || data.emoji === "high") next.emoji = data.emoji
   if (typeof data.includePrice === "boolean") next.includePrice = data.includePrice
   if (typeof data.generatedAt === "string") next.generatedAt = data.generatedAt
+  if (typeof data.generateMs === "number" && Number.isFinite(data.generateMs)) next.generateMs = data.generateMs
   return next
 }
 
@@ -309,14 +314,16 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "patch", patch: { generating: false, autoPhase: null } })
       return
     }
+    const started = Date.now()
     const copies = await generateCopies(input)
     if (runRef.current !== token) return
     dispatch({
       type: "patch",
       patch: {
         copies,
-        activeCopyId: copies[0]?.id ?? null,
+        activeCopyId: copies.find((item) => item.tone === (input.tone === "seed" ? "urgent" : input.tone))?.id ?? copies[0]?.id ?? null,
         generating: false,
+        generateMs: Date.now() - started,
         generatedAt: formatShanghaiDateTime(new Date()),
         autoPhase: 3,
         review: "idle",
@@ -454,6 +461,7 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
         }
         busyRef.current.generate = true
         dispatch({ type: "patch", patch: { generating: true, step: 4 } })
+        const started = Date.now()
         try {
           const copies = await generateCopies(input)
           dispatch({
@@ -461,12 +469,13 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
             patch: {
               generating: false,
               copies,
-              activeCopyId: copies[0]?.id ?? null,
+              activeCopyId: copies.find((item) => item.tone === (input.tone === "seed" ? "urgent" : input.tone))?.id ?? copies[0]?.id ?? null,
               review: "idle",
               publish: "idle",
               publishedAt: null,
               publishId: null,
               generatedAt: formatShanghaiDateTime(new Date()),
+              generateMs: Date.now() - started,
             },
           })
         } finally {
@@ -480,6 +489,7 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
         if (!current || !input) return
         const index = snapshot.copies.findIndex((item) => item.id === id)
         dispatch({ type: "patch", patch: { regeneratingId: id } })
+        const started = Date.now()
         await delay(1500)
         const fresh = composeVariant(input, current.tone, index)
         fresh.id = `${fresh.id}-r${Date.now()}`
@@ -489,6 +499,7 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
           patch: {
             regeneratingId: null,
             copies,
+            generateMs: Date.now() - started,
             activeCopyId: snapshot.activeCopyId === id ? fresh.id : snapshot.activeCopyId,
             review: "idle",
             publish: "idle",

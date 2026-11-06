@@ -79,9 +79,8 @@ const TONE_EMOJI: Record<Tone, string> = {
   interactive: "💬",
 }
 
-function variantTones(primary: Tone): Tone[] {
-  const rest = (["trend", "seed", "urgent", "interactive"] as Tone[]).filter((tone) => tone !== primary)
-  return [primary, rest[0], rest[1]]
+function variantTones(): Tone[] {
+  return ["trend", "urgent", "interactive"]
 }
 
 function engineLabel(engineId: EngineId) {
@@ -165,7 +164,7 @@ export function composeVariant(input: CopyInput, tone: Tone, index: number): Cop
 }
 
 export function composeAll(input: CopyInput): CopyVariant[] {
-  return variantTones(input.tone).map((tone, index) => composeVariant(input, tone, index))
+  return variantTones().map((tone, index) => composeVariant(input, tone, index))
 }
 
 export async function generateCopies(input: CopyInput): Promise<CopyVariant[]> {

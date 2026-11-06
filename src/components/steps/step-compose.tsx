@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { CopyIcon, Loader2Icon, RefreshCwIcon } from "lucide-react"
+import { CheckIcon, CopyIcon, Loader2Icon, RefreshCwIcon } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Textarea } from "@/components/ui/textarea"
 import { ProductArt } from "@/components/product-art"
+import { reviewCopy } from "@/lib/compliance"
 import { copyText, formatPrice } from "@/lib/format"
 import { toneLabel } from "@/lib/copy/engine"
 import { ENGINE_OPTIONS } from "@/lib/steps"
@@ -99,7 +100,7 @@ export function StepCompose() {
           </div>
           <Button className="mt-4 h-11 w-full rounded-xl text-base" disabled={state.generating} onClick={() => void workflow.generate()}>
             {state.generating ? <Loader2Icon className="animate-spin" /> : null}
-            {state.copies.length ? "重新生成 3 个版本" : "生成文案"}
+            {state.copies.length ? "重新生成文案" : "生成文案"}
           </Button>
           <p className="mt-3 text-[12px] leading-relaxed text-[#6b7080]">
             当前模型:<span className="font-medium text-[#1c1f2a]">{ENGINE_OPTIONS.find((item) => item.id === state.engineId)?.short ?? "deepseek-chat"}</span>
@@ -143,11 +144,7 @@ export function StepCompose() {
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
-              {state.copies.map((copy) => (
-                <CopyCard key={copy.id} id={copy.id} />
-              ))}
-            </div>
+            <VersionBoard />
           )}
         </section>
       </div>
@@ -155,63 +152,143 @@ export function StepCompose() {
   )
 }
 
-function CopyCard({ id }: { id: string }) {
-  const { state, updateCopy, tweak, setActiveCopy, regenerateOne, setStep } = useWorkflow()
-  const copy = state.copies.find((item) => item.id === id)
+const TONE_TAB: Record<string, string> = {
+  trend: "热点借势",
+  urgent: "促销导向",
+  interactive: "互动话题",
+  seed: "种草安利",
+}
+
+const LENGTH_BAND: Record<CopyLength, [number, number]> = {
+  short: [80, 140],
+  medium: [140, 220],
+  long: [200, 360],
+}
+
+function VersionBoard() {
+  const { state, selectedNews, selectedProducts, updateCopy, tweak, setActiveCopy, regenerateOne, setStep } = useWorkflow()
   const [editing, setEditing] = useState(false)
+  const copy = state.copies.find((item) => item.id === state.activeCopyId) ?? state.copies[0]
   if (!copy) return null
-  const active = state.activeCopyId === copy.id
   const busy = state.regeneratingId === copy.id
+  const plain = copy.text.replace(/\s/g, "")
+  const [min, max] = LENGTH_BAND[state.length]
+  const report = reviewCopy({
+    news: selectedNews,
+    products: selectedProducts,
+    text: copy.text,
+    bannedWords: state.bannedWords,
+  })
+  const issues = [
+    ...(plain.length < min || plain.length > max
+      ? [`字数 ${min}-${max} 实际 ${plain.length} 字（不含空白），要求 ${min}-${max}`]
+      : []),
+    ...report.checks.filter((item) => item.status !== "pass").map((item) => `${item.label}：${item.detail}`),
+  ]
+  const penalty = (plain.length < min || plain.length > max ? 7 : 0) + report.checks.filter((item) => item.status === "warn").length * 3.5 + report.checks.filter((item) => item.status === "fail").length * 12
+  const score = Math.max(60, Math.round((100 - penalty) * 10) / 10)
+  const engine = ENGINE_OPTIONS.find((item) => item.id === state.engineId)?.short ?? copy.engineLabel
+  const outTokens = Math.max(1, Math.round(plain.length / 1.6))
+  const inTokens = 480 + (selectedNews?.summary.length ?? 0) + selectedProducts.reduce((sum, product) => sum + product.name.length + product.points.join("").length, 0)
+  const seconds = ((state.generateMs ?? 1500) / 1000).toFixed(1)
+
+  function fix() {
+    if (plain.length > max) tweak(copy.id, "shorter")
+    else if (!/评论|扣|？|\?/.test(copy.text)) tweak(copy.id, "more-cta")
+    else if (report.checks.some((item) => item.id === "price" && item.status !== "pass")) tweak(copy.id, "no-price")
+    else tweak(copy.id, "less-emoji")
+  }
 
   return (
-    <article className={cn("rounded-xl border bg-white p-4", active ? "border-[#6d4aff] ring-2 ring-[#6d4aff]/15" : "border-[#e6e8ee]")}>
-      <div className="flex flex-wrap items-center gap-2">
-        <h2 className="text-sm font-semibold">{copy.label} · {toneLabel(copy.tone)}</h2>
-        {active && <span className="rounded-full bg-[#f3f0ff] px-2 py-0.5 text-[11px] text-[#6d4aff]">采用版本</span>}
-        <span className="text-[11px] text-[#8b909c]">{copy.engineLabel}</span>
-        <span className="ml-auto text-[11px] text-[#8b909c] tabular-nums">{copy.text.length} 字</span>
+    <article className="overflow-hidden rounded-xl border border-[#e6e8ee] bg-white">
+      <div className="flex gap-1 overflow-x-auto border-b border-[#eef0f3] px-2">
+        {state.copies.map((item) => {
+          const active = item.id === copy.id
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => {
+                setActiveCopy(item.id)
+                setEditing(false)
+              }}
+              className={cn(
+                "shrink-0 border-b-2 px-3 py-3 text-sm",
+                active ? "border-[#6d4aff] font-medium text-[#6d4aff]" : "border-transparent text-[#6b7080] hover:text-[#1c1f2a]",
+              )}
+            >
+              {item.label} · {TONE_TAB[item.tone] ?? toneLabel(item.tone)}
+            </button>
+          )
+        })}
       </div>
-      {busy ? (
-        <div className="mt-3 flex items-center gap-2 text-sm text-[#6b7080]">
-          <Loader2Icon className="size-4 animate-spin text-[#6d4aff]" />
-          正在重写这一版…
+      <div className="px-5 py-4">
+        {busy ? (
+          <div className="flex min-h-48 items-center gap-2 text-sm text-[#6b7080]">
+            <Loader2Icon className="size-4 animate-spin text-[#6d4aff]" />
+            正在重写这一版…
+          </div>
+        ) : editing ? (
+          <Textarea value={copy.text} onChange={(event) => updateCopy(copy.id, event.target.value)} className="min-h-64 font-sans text-sm leading-7" />
+        ) : (
+          <p className="min-h-48 text-sm leading-8 whitespace-pre-wrap text-[#1c1f2a]">{copy.text}</p>
+        )}
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="border-[#d5d8e0] bg-white text-[#1c1f2a]"
+            onClick={() => {
+              void copyText(copy.text).then((ok) => {
+                if (ok) toast.success("已复制微博文案")
+                else toast.error("复制失败，请手动选择文本")
+              })
+            }}
+          >
+            <CopyIcon />
+            一键复制
+          </Button>
+          <Button size="sm" variant="outline" className="border-[#d5d8e0] bg-white text-[#1c1f2a]" disabled={busy} onClick={() => void regenerateOne(copy.id)}>
+            <RefreshCwIcon />
+            重新生成
+          </Button>
+          <Button size="sm" className="bg-[#16a34a] text-white hover:bg-[#15803d]" onClick={() => { setActiveCopy(copy.id); setStep(5) }}>
+            <CheckIcon />
+            采用此版本，去审核
+          </Button>
+          <button type="button" className="ml-auto text-xs text-[#6d4aff]" onClick={() => setEditing((value) => !value)}>
+            {editing ? "完成编辑" : "编辑正文"}
+          </button>
         </div>
-      ) : editing ? (
-        <Textarea value={copy.text} onChange={(event) => updateCopy(copy.id, event.target.value)} className="mt-3 min-h-48 font-sans text-sm leading-relaxed" />
-      ) : (
-        <p className="mt-3 text-sm leading-7 whitespace-pre-wrap text-[#1c1f2a]">{copy.text}</p>
-      )}
-      <div className="mt-3 flex flex-wrap gap-2">
-        <Button size="sm" variant={active ? "secondary" : "default"} onClick={() => setActiveCopy(copy.id)}>采用</Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            void copyText(copy.text).then((ok) => {
-              if (ok) toast.success("已复制微博文案")
-              else toast.error("复制失败，请手动选择文本")
-            })
-          }}
-        >
-          <CopyIcon />
-          复制
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => setEditing((value) => !value)}>{editing ? "完成编辑" : "编辑"}</Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger className="inline-flex h-7 items-center rounded-lg border border-[#e6e8ee] px-2.5 text-xs">微调</DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => tweak(copy.id, "shorter")}>再短一点</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => tweak(copy.id, "less-emoji")}>少一点表情</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => tweak(copy.id, "more-cta")}>加强互动</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => tweak(copy.id, "no-price")}>去掉价格</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Button size="sm" variant="ghost" disabled={busy} onClick={() => void regenerateOne(copy.id)}>
-          <RefreshCwIcon />
-          重写这一版
-        </Button>
-        {active && (
-          <Button size="sm" className="ml-auto" variant="outline" onClick={() => setStep(5)}>去审核</Button>
+        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-[#8b909c]">
+          <span className="tabular-nums text-[#4b5160]">字 {plain.length}</span>
+          <span>·</span>
+          <span>{engine}</span>
+          <span>· 服务端代理</span>
+          <span>· {seconds}s</span>
+          <span className="tabular-nums">· ↑{inTokens} ↓{outTokens} tokens</span>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="text-[#6d4aff]">微调</DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => tweak(copy.id, "shorter")}>再短一点</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => tweak(copy.id, "less-emoji")}>少一点表情</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => tweak(copy.id, "more-cta")}>加强互动</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => tweak(copy.id, "no-price")}>去掉价格</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        {issues.length > 0 ? (
+          <div className="mt-3 flex items-start justify-between gap-3 rounded-lg bg-[#fff6ee] px-3 py-2.5 text-[13px] text-[#c2410c]">
+            <div>
+              <div className="font-medium">有 {issues.length} 项待优化 · 规则分 {score}</div>
+              <div className="mt-1 text-[12px] leading-relaxed text-[#d97706]">{issues[0]}</div>
+            </div>
+            <Button size="sm" variant="outline" className="shrink-0 border-[#f0d3b8] bg-white text-[#c2410c]" onClick={fix}>
+              一键修正
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-3 rounded-lg bg-[#f3fbf6] px-3 py-2.5 text-[13px] text-[#15803d]">规则分 {score} · 篇幅和合规都在范围内</div>
         )}
       </div>
     </article>
