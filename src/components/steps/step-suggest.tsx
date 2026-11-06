@@ -4,7 +4,7 @@ import { ProductArt } from "@/components/product-art"
 import { Button } from "@/components/ui/button"
 import { formatPrice } from "@/lib/format"
 import { matchProducts } from "@/lib/matching"
-import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED } from "@/lib/steps"
+import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED, CHROME_BUTTON } from "@/lib/steps"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
 
@@ -35,7 +35,7 @@ export function StepSuggest() {
           <h1 className="text-xl font-semibold tracking-tight">Step 2 · 建议匹配商品</h1>
           <p className="mt-1 text-sm text-[#6b7080]">系统基于热点语义与商品卖点自动推荐，点击卡片采纳或取消，可多选。</p>
         </div>
-        <Button variant="outline" size="sm" disabled={locked} onClick={() => adoptTop(3)}>
+        <Button variant="outline" size="sm" className={CHROME_BUTTON} disabled={locked} onClick={() => adoptTop(3)}>
           一键采纳全部
         </Button>
       </div>
@@ -80,10 +80,13 @@ export function StepSuggest() {
 
       </div>
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-[#e6e8ee] bg-[#f4f5f7] py-3">
-        <div className="text-sm text-[#6b7080]">已采纳 {state.selectedProductIds.length} 件 · 可到 Step 3 从完整商品库补充</div>
+        <div className="text-sm text-[#6b7080]">
+          <span className="font-semibold text-[#1c1f2a]">已采纳 {state.selectedProductIds.length} 件</span>
+          <span> · 可到 Step 3 从完整商品库补充</span>
+        </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setStep(3)}>去商品库深度筛选</Button>
-          <Button disabled={locked || state.selectedProductIds.length === 0} onClick={() => setStep(4)}>下一步：创作文案</Button>
+          <Button variant="outline" className={CHROME_BUTTON} onClick={() => setStep(3)}>去商品库深度筛选</Button>
+          <Button variant="outline" className={CHROME_BUTTON} disabled={locked || state.selectedProductIds.length === 0} onClick={() => setStep(4)}>下一步：创作文案</Button>
         </div>
       </div>
     </div>

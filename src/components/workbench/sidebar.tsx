@@ -46,6 +46,8 @@ export function Sidebar() {
         {STEPS.map((step) => {
           const active = state.step === step.id
           const complete = done[step.id] && !active
+          const hint = stepHint(step.id, selectedNews?.title, selectedProducts.length, state.copies.length, state.publish)
+          const statusHint = hint !== step.desc
           return (
             <button
               key={step.id}
@@ -70,8 +72,8 @@ export function Sidebar() {
                 <span className="block text-[13px] font-medium">
                   Step {step.id} · {step.title}
                 </span>
-                <span className={cn("mt-0.5 line-clamp-2 text-[11px]", active ? "text-[#7c6ad6]" : "text-[#8b909c]")}>
-                  {stepHint(step.id, selectedNews?.title, selectedProducts.length, state.copies.length, state.publish)}
+                <span className={cn("mt-0.5 line-clamp-2 text-[11px]", statusHint ? "font-medium text-emerald-600" : "text-[#8b909c]")}>
+                  {hint}
                 </span>
               </span>
             </button>

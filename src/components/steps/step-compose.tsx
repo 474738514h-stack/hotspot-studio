@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState, type ReactNode } from "react"
-import { CopyIcon, Loader2Icon, RefreshCwIcon, WandSparklesIcon } from "lucide-react"
+import { useEffect, useState } from "react"
+import { CopyIcon, Loader2Icon, RefreshCwIcon } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,9 +11,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Textarea } from "@/components/ui/textarea"
-import { copyText } from "@/lib/format"
+import { ProductArt } from "@/components/product-art"
+import { copyText, formatPrice } from "@/lib/format"
 import { toneLabel } from "@/lib/copy/engine"
-import type { CopyLength, EmojiLevel, Tone } from "@/lib/types"
+import { ENGINE_OPTIONS } from "@/lib/steps"
+import type { CopyLength, EmojiLevel } from "@/lib/types"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
 import { EmptyBlock } from "@/components/steps/step-suggest"
@@ -43,69 +45,91 @@ export function StepCompose() {
   return (
     <div className="min-h-0 flex-1 overflow-y-auto pb-6 [scrollbar-gutter:stable]">
       <h1 className="text-xl font-semibold tracking-tight">Step 4 · 创作文案</h1>
-      <p className="mt-1 text-sm text-[#6b7080]">按热点和商品生成 3 个微博版本。生成大约 1.5 秒，结果是可编辑的纯文本。</p>
+      <p className="mt-1 text-sm text-[#6b7080]">基于“热点 + 商品”组合，由 LLM 生成微博风格营销文案（多版本可微调）</p>
 
       <div className="mt-4 grid w-full items-start gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="space-y-4 rounded-xl border border-[#e6e8ee] bg-white p-4 lg:sticky lg:top-4">
-          <div>
-            <div className="text-[11px] text-[#8b909c]">热点</div>
-            <div className="mt-1 text-sm font-medium">{selectedNews.title}</div>
+        <aside className="rounded-2xl border border-[#e6e8ee] bg-white p-4 lg:sticky lg:top-4">
+          <div className="text-[13px] font-medium text-[#1c1f2a]">
+            创作素材 <span className="ml-1 text-[11px] font-semibold tracking-[0.08em] text-[#b0b5c0]">INGREDIENTS</span>
           </div>
-          <div>
-            <div className="text-[11px] text-[#8b909c]">商品</div>
-            <ul className="mt-1 space-y-1 text-sm">
-              {selectedProducts.map((product, index) => (
-                <li key={product.id}>{index === 0 ? "主推" : "搭配"} · {product.name}</li>
-              ))}
-            </ul>
+          <div className="mt-3 rounded-xl bg-[#fbf4ee] px-3 py-3">
+            <div className="text-[15px] font-semibold leading-snug text-[#1c1f2a]">{selectedNews.title}</div>
+            <div className="mt-1 text-[13px] text-[#e11d48]">#{selectedNews.hashtag}#</div>
           </div>
-          <Field label="主打语调 TONE">
-            <Segment
-              value={state.tone === "seed" ? "urgent" : state.tone}
-              options={[
-                { value: "trend" as Tone, label: "热点借势" },
-                { value: "urgent" as Tone, label: "促销导向" },
-                { value: "interactive" as Tone, label: "互动话题" },
-              ]}
-              onChange={workflow.setTone}
-            />
-          </Field>
-          <Field label="篇幅">
-            <Segment
-              value={state.length}
-              options={[
-                { value: "short" as CopyLength, label: "短" },
-                { value: "medium" as CopyLength, label: "中" },
-                { value: "long" as CopyLength, label: "长" },
-              ]}
-              onChange={workflow.setLength}
-            />
-          </Field>
-          <Field label="表情">
-            <Segment
-              value={state.emoji}
-              options={[
-                { value: "low" as EmojiLevel, label: "克制" },
-                { value: "mid" as EmojiLevel, label: "标准" },
-                { value: "high" as EmojiLevel, label: "热闹" },
-              ]}
-              onChange={workflow.setEmoji}
-            />
-          </Field>
-          <label className="flex items-center justify-between text-sm">
-            <span>写入价格</span>
-            <input
-              type="checkbox"
-              checked={state.includePrice}
-              onChange={(event) => workflow.setIncludePrice(event.target.checked)}
-              className="size-4 accent-[#6d4aff]"
-            />
-          </label>
-          <Button className="w-full" disabled={state.generating} onClick={() => void workflow.generate()}>
-            {state.generating ? <Loader2Icon className="animate-spin" /> : <WandSparklesIcon />}
+          <ul className="mt-3 space-y-2">
+            {selectedProducts.map((product) => (
+              <li key={product.id} className="flex items-center gap-3 rounded-xl border border-[#e6e8ee] bg-white px-3 py-2.5">
+                <ProductArt id={product.id} thumb />
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-semibold text-[#1c1f2a]">{product.name}</div>
+                  <div className="mt-0.5 truncate text-[13px]">
+                    <span className="font-medium text-[#e11d48]">{formatPrice(product.price)}</span>
+                    <span className="text-[#8b909c]"> · {product.points[0]}</span>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 text-[13px] font-medium text-[#1c1f2a]">
+            主打语调 <span className="ml-1 text-[11px] font-semibold tracking-[0.08em] text-[#b0b5c0]">TONE</span>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {(
+              [
+                ["trend", "热点借势"],
+                ["urgent", "促销导向"],
+                ["interactive", "互动话题"],
+              ] as const
+            ).map(([value, label]) => {
+              const active = (state.tone === "seed" ? "urgent" : state.tone) === value
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => workflow.setTone(value)}
+                  className={cn(
+                    "rounded-full px-3.5 py-1.5 text-sm",
+                    active ? "bg-[#6d4aff] font-medium text-white" : "border border-[#e6e8ee] bg-white text-[#1c1f2a]",
+                  )}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+          <Button className="mt-4 h-11 w-full rounded-xl text-base" disabled={state.generating} onClick={() => void workflow.generate()}>
+            {state.generating ? <Loader2Icon className="animate-spin" /> : null}
             {state.copies.length ? "重新生成 3 个版本" : "生成文案"}
           </Button>
-          <p className="text-[11px] leading-relaxed text-[#8b909c]">当前为样本生成，不会调用外部大模型。语气、篇幅和商品会写进预留的模型请求。</p>
+          <p className="mt-3 text-[12px] leading-relaxed text-[#6b7080]">
+            当前模型:<span className="font-medium text-[#1c1f2a]">{ENGINE_OPTIONS.find((item) => item.id === state.engineId)?.short ?? "deepseek-chat"}</span>
+            <span> · 服务端代理 </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="text-[#6d4aff]">切换</DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-64">
+                {ENGINE_OPTIONS.map((option) => (
+                  <DropdownMenuItem key={option.id} onClick={() => workflow.setEngine(option.id)}>
+                    {option.short}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </p>
+          <p className="mt-1 text-[11px] leading-relaxed text-[#9aa1ad]">
+            提示词模板可在
+            <button type="button" className="mx-0.5 text-[#6d4aff]" onClick={workflow.openAdmin}>后台管理</button>
+            查看与修改。共 3 个版本风格并发生成。
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[#f0f1f4] pt-3">
+            <span className="text-[11px] text-[#8b909c]">篇幅</span>
+            <Segment value={state.length} options={[{ value: "short" as CopyLength, label: "短" }, { value: "medium" as CopyLength, label: "中" }, { value: "long" as CopyLength, label: "长" }]} onChange={workflow.setLength} />
+            <span className="text-[11px] text-[#8b909c]">表情</span>
+            <Segment value={state.emoji} options={[{ value: "low" as EmojiLevel, label: "克制" }, { value: "mid" as EmojiLevel, label: "标准" }, { value: "high" as EmojiLevel, label: "热闹" }]} onChange={workflow.setEmoji} />
+            <label className="ml-auto flex items-center gap-1.5 text-[11px] text-[#6b7080]">
+              <input type="checkbox" checked={state.includePrice} onChange={(event) => workflow.setIncludePrice(event.target.checked)} className="size-3.5 accent-[#6d4aff]" />
+              写入价格
+            </label>
+          </div>
         </aside>
 
         <section>
@@ -219,15 +243,6 @@ function GenerateLoader() {
           </li>
         ))}
       </ol>
-    </div>
-  )
-}
-
-function Field({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div>
-      <div className="mb-1.5 text-[11px] text-[#8b909c]">{label}</div>
-      {children}
     </div>
   )
 }

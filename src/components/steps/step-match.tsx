@@ -6,7 +6,7 @@ import { ProductArt } from "@/components/product-art"
 import { ScoreRing } from "@/components/score-ring"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED } from "@/lib/steps"
+import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED, CHROME_BUTTON } from "@/lib/steps"
 import { formatPrice, formatSales } from "@/lib/format"
 import { matchProducts } from "@/lib/matching"
 import { PRODUCTS } from "@/lib/products"
@@ -128,8 +128,8 @@ export function StepMatch() {
             </div>
           ))}
           <div className="ml-auto flex gap-2">
-            <Button variant="outline" onClick={() => setStep(2)}>返回建议</Button>
-            <Button disabled={locked || selectedProducts.length === 0} onClick={() => setStep(4)}>去写文案</Button>
+            <Button variant="outline" className={CHROME_BUTTON} onClick={() => setStep(2)}>返回建议</Button>
+            <Button variant="outline" className={CHROME_BUTTON} disabled={locked || selectedProducts.length === 0} onClick={() => setStep(4)}>去写文案</Button>
           </div>
         </div>
       </div>

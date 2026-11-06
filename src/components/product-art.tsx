@@ -38,9 +38,16 @@ const ART: Record<string, { icon: LucideIcon; from: string; to: string; ink: str
   speaker: { icon: SpeakerIcon, from: "#e8fbff", to: "#c8f3fb", ink: "#0e7490" },
 }
 
-export function ProductArt({ id, className }: { id: string; className?: string }) {
+export function ProductArt({ id, className, thumb = false }: { id: string; className?: string; thumb?: boolean }) {
   const art = ART[id] ?? { icon: SparklesIcon, from: "#f3f0ff", to: "#e4dcff", ink: "#6d4aff" }
   const Icon = art.icon
+  if (thumb) {
+    return (
+      <div className={cn("grid size-11 shrink-0 place-items-center rounded-lg", className)} style={{ background: art.from }}>
+        <Icon className="size-5" style={{ color: art.ink }} strokeWidth={1.7} />
+      </div>
+    )
+  }
   return (
     <div
       className={cn("relative grid place-items-center overflow-hidden", className)}
