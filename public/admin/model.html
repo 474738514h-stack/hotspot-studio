@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>模型接入 · 后台管理</title>
+  <link rel="stylesheet" href="../theme.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <script src="admin.js"></script>
+  <script>
+    AdminShell.start({
+      id: "model",
+      title: "模型接入",
+      lead: "工作台顶栏展示的模型名。真正的接口还没接，这里只先把名字留下来。",
+      sections: [
+        { id: "name", title: "模型名称", summary: "保存后，后台读到的就是这个名字。工作台生成仍走本地演示引擎。", field: { type: "text", key: "modelName", label: "模型名称" } },
+        { id: "slot", title: "接入位", summary: "以后由服务端读取 LLM_API_BASE、LLM_API_KEY、LLM_MODEL，或把同一份输入交给 Coze。密钥不会写在这个页面上。" }
+      ]
+    })
+  </script>
+</body>
+</html>

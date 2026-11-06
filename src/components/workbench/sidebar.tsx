@@ -31,7 +31,7 @@ function stepHint(id: StepId, title: string | undefined, products: number, copie
 }
 
 export function Sidebar() {
-  const { state, setStep, selectedNews, selectedProducts, openAdmin } = useWorkflow()
+  const { state, setStep, selectedNews, selectedProducts } = useWorkflow()
   const done = doneMap({
     news: Boolean(selectedNews),
     products: selectedProducts.length > 0,
@@ -84,9 +84,9 @@ export function Sidebar() {
         <div className="text-xs font-medium text-[#1c1f2a]">大模型已接入</div>
         <p className="mt-1 text-[11px] leading-relaxed text-[#8b909c]">
           支持 DeepSeek 及任意 OpenAI 兼容接口。提示词可在
-          <button type="button" className="mx-0.5 text-[#6d4aff]" onClick={openAdmin}>
+          <a href="/admin/index.html" className="mx-0.5 text-[#6d4aff]">
             后台管理
-          </button>
+          </a>
           中修改。
         </p>
       </div>

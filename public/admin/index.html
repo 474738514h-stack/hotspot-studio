@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>概览 · 后台管理</title>
+  <link rel="stylesheet" href="../theme.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <script src="admin.js"></script>
+  <script>
+    AdminShell.start({
+      id: "overview",
+      title: "概览",
+      lead: "后台外壳。各页的具体开关后面再填，现在先把导航、来源和保存位定下来。",
+      sections: [
+        { id: "order", title: "配置从哪来", summary: "先问服务端，问不到就用这台浏览器里保存的，两边都没有再用内置默认值。顶栏徽章写的是这次实际用的那一级。" },
+        { id: "current", title: "当前生效", summary: "下面是这一次读到的配置。改数值请到对应页面，保存后会写回当前来源。", readout: true }
+      ]
+    })
+  </script>
+</body>
+</html>

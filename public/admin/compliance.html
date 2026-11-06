@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>合规 · 后台管理</title>
+  <link rel="stylesheet" href="../theme.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <script src="admin.js"></script>
+  <script>
+    AdminShell.start({
+      id: "compliance",
+      title: "合规",
+      lead: "审核文案时用的禁用词，以及模拟发布所用的账号名。",
+      sections: [
+        { id: "words", title: "禁用词", summary: "一行一个。文案里出现这些词时，审核会把它标出来。", field: { type: "textarea", key: "bannedWords", label: "禁用词" } },
+        { id: "account", title: "发布账号", summary: "审核页微博卡片上显示的账号名称。", field: { type: "text", key: "accountName", label: "账号名称" } }
+      ]
+    })
+  </script>
+</body>
+</html>

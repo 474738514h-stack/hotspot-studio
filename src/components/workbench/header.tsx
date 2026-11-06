@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils"
 
 export function Header() {
   const workflow = useWorkflow()
-  const { state, setMode, setEngine, openList, openAdmin, resetCampaign } = workflow
+  const { state, setMode, setEngine, openList, resetCampaign } = workflow
   const engine = engineMeta(state.engineId)
 
   return (
@@ -100,10 +100,10 @@ export function Header() {
           <TooltipContent>演示环境走本地文案引擎，请求不会离开这台浏览器。</TooltipContent>
         </Tooltip>
 
-        <Button variant="ghost" size="sm" className="hidden text-[#4b5160] lg:inline-flex" onClick={openAdmin}>
-          <SettingsIcon />
+        <a href="/admin/index.html" className="hidden h-8 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-[#4b5160] hover:bg-[#f6f7f9] lg:inline-flex">
+          <SettingsIcon className="size-4" />
           后台管理
-        </Button>
+        </a>
 
         <DropdownMenu>
           <DropdownMenuTrigger className="inline-flex size-8 items-center justify-center rounded-lg border border-[#e6e8ee] lg:hidden">
@@ -114,7 +114,7 @@ export function Header() {
               切换为{state.mode === "manual" ? "自动模式" : "手工模式"}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={openList}>清单</DropdownMenuItem>
-            <DropdownMenuItem onClick={openAdmin}>后台管理</DropdownMenuItem>
+            <DropdownMenuItem render={<a href="/admin/index.html" />}>后台管理</DropdownMenuItem>
             <DropdownMenuSeparator />
             {ENGINE_OPTIONS.map((option) => (
               <DropdownMenuItem key={option.id} onClick={() => setEngine(option.id)}>

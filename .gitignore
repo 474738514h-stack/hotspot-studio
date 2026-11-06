@@ -42,3 +42,6 @@ next-env.d.ts
 
 # reference screenshots kept outside the app
 /assets
+
+# admin config written by the local server
+/data

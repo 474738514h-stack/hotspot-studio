@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "../../public/theme.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -51,24 +52,6 @@
 }
 
 :root {
-  --background: #f4f5f7;
-  --foreground: #1c1f2a;
-  --card: #ffffff;
-  --card-foreground: #1c1f2a;
-  --popover: #ffffff;
-  --popover-foreground: #1c1f2a;
-  --primary: #6d4aff;
-  --primary-foreground: #ffffff;
-  --secondary: #f3f0ff;
-  --secondary-foreground: #4c3aa8;
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7080;
-  --accent: #f3f0ff;
-  --accent-foreground: #3f2d9e;
-  --destructive: #e11d48;
-  --border: #e6e8ee;
-  --input: #e1e4ea;
-  --ring: #6d4aff;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

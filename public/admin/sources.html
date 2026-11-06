@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>热点源 · 后台管理</title>
+  <link rel="stylesheet" href="../theme.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <script src="admin.js"></script>
+  <script>
+    AdminShell.start({
+      id: "sources",
+      title: "热点源",
+      lead: "工作台新闻抓取会按这里的开关决定收哪些热搜。",
+      sections: [
+        { id: "weibo", title: "微博热搜", summary: "关掉之后，工作台不再把微博热搜算进可抓取来源。", field: { type: "checkbox", key: "sources.weibo", label: "抓取微博热搜" } },
+        { id: "baidu", title: "百度热搜", summary: "关掉之后，工作台不再把百度热搜算进可抓取来源。", field: { type: "checkbox", key: "sources.baidu", label: "抓取百度热搜" } }
+      ]
+    })
+  </script>
+</body>
+</html>

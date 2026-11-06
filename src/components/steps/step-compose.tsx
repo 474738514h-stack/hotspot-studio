@@ -142,7 +142,7 @@ export function StepCompose() {
           </p>
           <p className="mt-1 text-[11px] leading-relaxed text-[#9aa1ad]">
             提示词模板可在
-            <button type="button" className="mx-0.5 text-[#6d4aff]" onClick={workflow.openAdmin}>后台管理</button>
+            <a href="/admin/index.html" className="mx-0.5 text-[#6d4aff]">后台管理</a>
             查看与修改。共 3 个版本风格并发生成。
           </p>
         </aside>
