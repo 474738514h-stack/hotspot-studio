@@ -21,8 +21,17 @@ function doneMap(input: {
   }
 }
 
+function stepHint(id: StepId, title: string | undefined, products: number, copies: number, publish: string) {
+  if (id === 1 && title) return `已选：${title}`
+  if (id === 2 && products) return `已采纳 ${products} 件`
+  if (id === 3 && products) return `已绑定 ${products} 件`
+  if (id === 4 && copies) return `已生成 ${copies} 个版本`
+  if (id === 5 && publish === "sent") return "已模拟发布"
+  return STEPS.find((step) => step.id === id)?.desc ?? ""
+}
+
 export function Sidebar() {
-  const { state, setStep, selectedNews, selectedProducts } = useWorkflow()
+  const { state, setStep, selectedNews, selectedProducts, openAdmin } = useWorkflow()
   const done = doneMap({
     news: Boolean(selectedNews),
     products: selectedProducts.length > 0,
@@ -32,7 +41,7 @@ export function Sidebar() {
 
   return (
     <aside className="hidden min-h-0 w-[232px] shrink-0 flex-col overflow-y-auto border-r border-[#e6e8ee] bg-[#fbfbfc] lg:flex">
-      <div className="px-4 pt-4 pb-2 text-[11px] font-medium tracking-[0.14em] text-[#98a0ae]">新闻流程 PIPELINE</div>
+      <div className="px-4 pt-4 pb-2 text-[11px] font-medium tracking-[0.14em] text-[#98a0ae]">营销流程 PIPELINE</div>
       <nav aria-label="营销流程" className="flex flex-col gap-1 px-2">
         {STEPS.map((step) => {
           const active = state.step === step.id
@@ -61,32 +70,23 @@ export function Sidebar() {
                 <span className="block text-[13px] font-medium">
                   Step {step.id} · {step.title}
                 </span>
-                <span className={cn("mt-0.5 block text-[11px]", active ? "text-[#7c6ad6]" : "text-[#8b909c]")}>{step.desc}</span>
+                <span className={cn("mt-0.5 line-clamp-2 text-[11px]", active ? "text-[#7c6ad6]" : "text-[#8b909c]")}>
+                  {stepHint(step.id, selectedNews?.title, selectedProducts.length, state.copies.length, state.publish)}
+                </span>
               </span>
             </button>
           )
         })}
       </nav>
-      <div className="mt-auto border-t border-[#eef0f3] p-4 text-xs text-[#6b7080]">
-        <div className="font-medium text-[#1c1f2a]">本轮战役</div>
-        <ul className="mt-2 space-y-1.5">
-          <li className="flex justify-between gap-3">
-            <span>热点</span>
-            <span className="truncate text-right text-[#1c1f2a]">{selectedNews ? "已选定" : "未选"}</span>
-          </li>
-          <li className="flex justify-between">
-            <span>商品</span>
-            <span className="text-[#1c1f2a]">{selectedProducts.length} 件</span>
-          </li>
-          <li className="flex justify-between">
-            <span>文案</span>
-            <span className="text-[#1c1f2a]">{state.copies.length ? "已生成" : "未生成"}</span>
-          </li>
-          <li className="flex justify-between">
-            <span>发布</span>
-            <span className="text-[#1c1f2a]">{state.publish === "sent" ? "已模拟发布" : "未发送"}</span>
-          </li>
-        </ul>
+      <div className="mt-auto border-t border-[#eef0f3] p-4">
+        <div className="text-xs font-medium text-[#1c1f2a]">大模型已接入</div>
+        <p className="mt-1 text-[11px] leading-relaxed text-[#8b909c]">
+          支持 DeepSeek 及任意 OpenAI 兼容接口。提示词可在
+          <button type="button" className="mx-0.5 text-[#6d4aff]" onClick={openAdmin}>
+            后台管理
+          </button>
+          中修改。
+        </p>
       </div>
     </aside>
   )

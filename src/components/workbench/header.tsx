@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  BotIcon,
   ChevronDownIcon,
   ListChecksIcon,
   MenuIcon,
@@ -72,11 +71,9 @@ export function Header() {
         </Button>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="hidden h-8 items-center gap-1.5 rounded-lg border border-[#e6e8ee] bg-white px-2.5 text-xs font-medium text-[#1c1f2a] lg:inline-flex">
-            <BotIcon className="size-3.5 text-[#6d4aff]" />
+          <DropdownMenuTrigger className="hidden h-8 items-center gap-1.5 rounded-full bg-[#e7f8ee] px-3 text-xs font-medium text-[#15915a] lg:inline-flex">
             <span className="max-w-36 truncate">{engine.short}</span>
-            <span className={cn("size-1.5 rounded-full", engine.connected ? "bg-emerald-500" : "bg-zinc-300")} />
-            <ChevronDownIcon className="size-3.5 text-[#8b909c]" />
+            <ChevronDownIcon className="size-3.5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-72">
             <DropdownMenuLabel>文案引擎</DropdownMenuLabel>

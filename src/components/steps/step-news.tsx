@@ -1,9 +1,10 @@
 "use client"
 
-import { RefreshCwIcon } from "lucide-react"
+import { CheckIcon, RefreshCwIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatHeatIndex, formatReposts } from "@/lib/format"
 import { sourceLabel } from "@/lib/news"
+import { ADAPTIVE_GRID } from "@/lib/steps"
 import type { NewsItem } from "@/lib/types"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
@@ -16,6 +17,9 @@ function metaLine(news: NewsItem) {
 
 export function StepNews() {
   const { state, visibleNews, blockedCount, selectNews, setStep, refreshNews } = useWorkflow()
+  const weiboCount = visibleNews.filter((item) => item.source === "weibo").length
+  const baiduCount = visibleNews.filter((item) => item.source === "baidu").length
+  const selected = visibleNews.find((item) => item.id === state.selectedNewsId)
 
   return (
     <div>
@@ -31,10 +35,11 @@ export function StepNews() {
           <span className="size-1.5 rounded-full bg-emerald-500" />
           实时抓取
         </span>
-        <span className={cn(state.sources.weibo ? "text-[#1c1f2a]" : "text-[#c0c4cc] line-through")}>微博热搜</span>
-        <span className={cn(state.sources.baidu ? "text-[#1c1f2a]" : "text-[#c0c4cc] line-through")}>百度热榜</span>
-        <span className="text-[#8b909c]">
-          {visibleNews.length} / {visibleNews.length}
+        <span className={cn("inline-flex items-center gap-1", state.sources.weibo ? "text-[#1c1f2a]" : "text-[#c0c4cc] line-through")}>
+          微博热搜 <span className="text-emerald-600">✓ {weiboCount}</span>
+        </span>
+        <span className={cn("inline-flex items-center gap-1", state.sources.baidu ? "text-[#1c1f2a]" : "text-[#c0c4cc] line-through")}>
+          百度热搜 <span className="text-emerald-600">✓ {baiduCount}</span>
         </span>
         <span className="text-[#8b909c]">上次抓取 {state.lastFetchLabel}</span>
         <span className="text-[#8b909c]">入库 {visibleNews.length} 条</span>
@@ -46,7 +51,7 @@ export function StepNews() {
         </Button>
       </div>
 
-      <div className={cn("mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4", state.fetching && "opacity-70")}>
+      <div className={cn("mt-4", ADAPTIVE_GRID, state.fetching && "opacity-70")}>
         {visibleNews.map((news) => {
           const selected = state.selectedNewsId === news.id
           return (
@@ -55,7 +60,7 @@ export function StepNews() {
               type="button"
               onClick={() => selectNews(news.id)}
               className={cn(
-                "flex h-full flex-col rounded-xl border bg-white p-3.5 text-left shadow-[0_1px_2px_rgba(28,31,42,0.04)] transition hover:-translate-y-0.5 hover:shadow-md",
+                "relative flex h-full flex-col rounded-xl border bg-white p-3.5 text-left shadow-[0_1px_2px_rgba(28,31,42,0.04)] transition hover:-translate-y-0.5 hover:shadow-md",
                 selected ? "border-[#6d4aff] ring-2 ring-[#6d4aff]/15" : "border-[#e6e8ee]",
                 news.risk === "blocked" && "border-l-[3px] border-l-orange-400",
               )}
@@ -65,10 +70,15 @@ export function StepNews() {
                 {news.trend === "new" && <span className="rounded bg-emerald-50 px-1 font-semibold text-emerald-600">新</span>}
                 <span className="font-medium text-sky-600">实时</span>
                 <span className="truncate text-[#9aa1ad]">{metaLine(news)}</span>
-                {selected && <span className="ml-auto shrink-0 font-medium text-[#6d4aff]">已选</span>}
+                {selected && (
+                  <span className="ml-auto inline-flex shrink-0 items-center gap-0.5 font-medium text-[#6d4aff]">
+                    <CheckIcon className="size-3" />
+                    已选为爆款热点
+                  </span>
+                )}
               </div>
               <h2 className="mt-2 text-[15px] leading-snug font-semibold text-[#1c1f2a]">{news.title}</h2>
-              <p className="mt-1.5 line-clamp-3 text-[12.5px] leading-relaxed text-[#6b7080]">{news.summary}</p>
+              <p className="mt-1.5 line-clamp-2 text-[12.5px] leading-relaxed text-[#6b7080]">{news.summary}</p>
               {news.heatIndex ? (
                 <p className="mt-1 text-[11px] text-[#9aa1ad]">实时热度 {formatHeatIndex(news.heatIndex)}</p>
               ) : null}
@@ -78,9 +88,12 @@ export function StepNews() {
                 </div>
               )}
               <div className="mt-auto flex items-end justify-between gap-3 pt-3">
-                <div className="flex items-baseline gap-1.5">
+                <div className="flex items-center gap-2">
                   <span className="text-[11px] text-[#9aa1ad]">热度</span>
-                  <span className="text-xl leading-none font-semibold text-orange-500 tabular-nums">{news.heatScore}</span>
+                  <span className="relative h-1 w-12 overflow-hidden rounded-full bg-[#e6e8ee]">
+                    <span className="absolute inset-y-0 left-0 rounded-full bg-orange-400" style={{ width: `${news.heatScore}%` }} />
+                  </span>
+                  <span className="text-lg leading-none font-semibold text-orange-500 tabular-nums">{news.heatScore}</span>
                 </div>
                 <span className="truncate text-[11px] text-[#6d4aff]">#{news.hashtag}#</span>
               </div>
@@ -89,15 +102,14 @@ export function StepNews() {
         })}
       </div>
 
-      {state.selectedNewsId && (
-        <div className="sticky bottom-3 z-10 mt-4 flex items-center justify-between gap-3 rounded-2xl border border-[#e6e8ee] bg-white/95 px-4 py-3 shadow-lg backdrop-blur">
-          <div className="min-w-0">
-            <div className="text-[11px] text-[#8b909c]">已选为本轮爆款热点</div>
-            <div className="truncate text-sm font-medium">{visibleNews.find((item) => item.id === state.selectedNewsId)?.title ?? "已选热点"}</div>
-          </div>
-          <Button onClick={() => setStep(2)}>查看建议商品</Button>
-        </div>
-      )}
+      <div className="sticky bottom-0 z-10 mt-4 flex w-full items-center justify-between gap-3 bg-[#f4f5f7]/95 py-3">
+        <span className="min-w-0 truncate text-sm text-[#6b7080]">
+          {selected ? `已选：${selected.title}` : "选择一条热点后可进入下一步"}
+        </span>
+        <Button disabled={!selected} onClick={() => setStep(2)}>
+          下一步：建议匹配商品
+        </Button>
+      </div>
     </div>
   )
 }

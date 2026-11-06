@@ -21,11 +21,15 @@ export const OPERATOR = {
 }
 
 export const WEIBO_ACCOUNT = {
-  name: "热点好物官",
-  handle: "hotgoods",
-  fans: "128.6万",
+  name: "好物研究所Lab",
+  handle: "labgoods",
+  fans: "86.2万",
   verified: "企业蓝V",
 }
+
+export const PAGE_INSET = "px-6"
+export const ADAPTIVE_GRID = "grid w-full grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3"
+export const ADAPTIVE_GRID_PRODUCT = "grid w-full grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3"
 
 export const GENERATE_DELAY_MS = 1500
 

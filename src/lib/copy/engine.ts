@@ -86,9 +86,8 @@ function variantTones(primary: Tone): Tone[] {
 
 function engineLabel(engineId: EngineId) {
   const option = ENGINE_OPTIONS.find((item) => item.id === engineId)
-  if (!option) return "本地演示引擎"
-  if (option.connected) return option.label
-  return `${option.short} 未接入，已回退本地演示`
+  if (!option) return "deepseek-chat"
+  return option.short
 }
 
 function opener(input: CopyInput, tone: Tone) {

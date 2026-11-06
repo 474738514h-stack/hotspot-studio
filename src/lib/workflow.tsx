@@ -71,7 +71,7 @@ type Action =
 const initialState: WorkflowState = {
   step: 1,
   mode: "manual",
-  engineId: "local-seed",
+  engineId: "reserved-deepseek",
   newsList: createNews(),
   selectedNewsId: null,
   selectedProductIds: [],
@@ -82,7 +82,7 @@ const initialState: WorkflowState = {
   publishedAt: null,
   publishId: null,
   engagement: { reposts: 0, comments: 0, likes: 0 },
-  lastFetchLabel: "13:07:58",
+  lastFetchLabel: "20:41:33",
   fetching: false,
   sources: { weibo: true, baidu: true },
   bannedWords: DEFAULT_BANNED_WORDS,

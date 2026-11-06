@@ -48,10 +48,17 @@ export function StepReview() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold tracking-tight">Step 5 · 审核并发送</h1>
-      <p className="mt-1 text-sm text-[#6b7080]">预览微博卡片，处理合规项。通过之后才能一键发送。发送只改变本机演示状态。</p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">Step 5 · 审核并发送</h1>
+          <p className="mt-1 text-sm text-[#6b7080]">最终微博效果预览，合规审核通过后可以一键发送。发送只改变本机演示状态。</p>
+        </div>
+        <span className={cn("shrink-0 text-sm font-medium", state.publish === "sent" ? "text-emerald-600" : effectiveReview === "passed" ? "text-[#6d4aff]" : "text-orange-500")}>
+          {statusLabel}
+        </span>
+      </div>
 
-      <div className="mt-4 grid items-start gap-4 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)]">
+      <div className="mt-4 grid w-full items-start gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         <article className="rounded-2xl border border-[#e6e8ee] bg-white p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="text-[11px] text-[#8b909c]">微博卡片预览</div>

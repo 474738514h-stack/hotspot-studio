@@ -6,6 +6,7 @@ import { ProductArt } from "@/components/product-art"
 import { ScoreRing } from "@/components/score-ring"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ADAPTIVE_GRID_PRODUCT } from "@/lib/steps"
 import { formatPrice, formatSales } from "@/lib/format"
 import { matchProducts } from "@/lib/matching"
 import { PRODUCTS } from "@/lib/products"
@@ -82,7 +83,7 @@ export function StepMatch() {
       </div>
 
       <div className="mt-3 text-xs text-[#8b909c]">{filtered.length} 件商品 · 样本商品库</div>
-      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className={cn("mt-3", ADAPTIVE_GRID_PRODUCT)}>
         {filtered.map((product) => {
           const selected = state.selectedProductIds.includes(product.id)
           const meta = scoreMap.get(product.id)
@@ -113,7 +114,7 @@ export function StepMatch() {
         })}
       </div>
 
-      <div className="sticky bottom-3 z-10 mt-4 rounded-2xl border border-[#e6e8ee] bg-white/95 p-3 shadow-lg backdrop-blur">
+      <div className="sticky bottom-0 z-10 mt-4 w-full rounded-none bg-[#f4f5f7]/95 py-3">
         <div className="flex flex-wrap items-center gap-2">
           {selectedProducts.length === 0 && <span className="text-sm text-[#6b7080]">还没有绑定商品</span>}
           {selectedProducts.map((product, index) => (

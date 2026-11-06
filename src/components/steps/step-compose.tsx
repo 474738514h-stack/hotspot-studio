@@ -13,7 +13,6 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { copyText } from "@/lib/format"
 import { toneLabel } from "@/lib/copy/engine"
-import { TONE_LABEL } from "@/lib/steps"
 import type { CopyLength, EmojiLevel, Tone } from "@/lib/types"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
@@ -46,7 +45,7 @@ export function StepCompose() {
       <h1 className="text-xl font-semibold tracking-tight">Step 4 · 创作文案</h1>
       <p className="mt-1 text-sm text-[#6b7080]">按热点和商品生成 3 个微博版本。生成大约 1.5 秒，结果是可编辑的纯文本。</p>
 
-      <div className="mt-4 grid items-start gap-4 lg:grid-cols-[300px_minmax(0,1fr)]">
+      <div className="mt-4 grid w-full items-start gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
         <aside className="space-y-4 rounded-xl border border-[#e6e8ee] bg-white p-4 lg:sticky lg:top-4">
           <div>
             <div className="text-[11px] text-[#8b909c]">热点</div>
@@ -60,10 +59,14 @@ export function StepCompose() {
               ))}
             </ul>
           </div>
-          <Field label="语气">
+          <Field label="主打语调 TONE">
             <Segment
-              value={state.tone}
-              options={(Object.keys(TONE_LABEL) as Tone[]).map((tone) => ({ value: tone, label: TONE_LABEL[tone] }))}
+              value={state.tone === "seed" ? "urgent" : state.tone}
+              options={[
+                { value: "trend" as Tone, label: "热点借势" },
+                { value: "urgent" as Tone, label: "促销导向" },
+                { value: "interactive" as Tone, label: "互动话题" },
+              ]}
               onChange={workflow.setTone}
             />
           </Field>
@@ -109,10 +112,10 @@ export function StepCompose() {
           {state.generating ? (
             <GenerateLoader />
           ) : state.copies.length === 0 ? (
-            <div className="grid min-h-[360px] place-items-center rounded-xl border border-dashed border-[#d9dce3] bg-white">
+            <div className="grid min-h-[480px] place-items-center rounded-xl border border-dashed border-[#d9dce3] bg-white">
               <div className="max-w-sm text-center">
-                <div className="text-sm font-medium">准备好了</div>
-                <p className="mt-1 text-sm text-[#6b7080]">点左侧「生成文案」。会先给出加载过程，再输出带话题、表情和互动引导的正文。</p>
+                <div className="text-sm font-medium">待生成</div>
+                <p className="mt-2 text-sm leading-relaxed text-[#6b7080]">左侧确认「热点 + 商品」组合与文案语调，点击「生成文案」即可产出 3 个版本的微博营销文案。</p>
               </div>
             </div>
           ) : (

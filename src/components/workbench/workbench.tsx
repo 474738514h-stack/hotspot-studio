@@ -9,6 +9,7 @@ import { StepMatch } from "@/components/steps/step-match"
 import { StepNews } from "@/components/steps/step-news"
 import { StepReview } from "@/components/steps/step-review"
 import { StepSuggest } from "@/components/steps/step-suggest"
+import { ENGINE_OPTIONS } from "@/lib/steps"
 import { WorkflowProvider, useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
 
@@ -30,15 +31,17 @@ function Shell() {
       <Header />
       <div className="flex min-h-0 flex-1">
         <Sidebar />
-        <main className="min-w-0 flex-1 overflow-y-auto">
+        <main className="min-w-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
           <MobileSteps />
-          <div className="mx-auto w-full max-w-[1440px] px-4 py-4 lg:px-6 lg:py-5">
+          <div className="w-full px-6 py-4">
             <CampaignLine
               title={selectedNews?.title}
-              products={selectedProducts.length}
-              hasCopy={state.copies.length > 0}
+              productNames={selectedProducts.map((item) => item.name)}
+              copyCount={state.copies.length}
+              engine={state.engineId}
+              showGenerated={state.step === 5 && state.copies.length > 0}
               sent={state.publish === "sent"}
-              onJump={() => setStep(selectedNews ? 1 : 1)}
+              onJump={() => setStep(1)}
               onReset={resetCampaign}
             />
             <div className="mt-3">
@@ -75,19 +78,24 @@ function Shell() {
 
 function CampaignLine({
   title,
-  products,
-  hasCopy,
+  productNames,
+  copyCount,
+  engine,
+  showGenerated,
   sent,
   onJump,
   onReset,
 }: {
   title?: string
-  products: number
-  hasCopy: boolean
+  productNames: string[]
+  copyCount: number
+  engine: string
+  showGenerated: boolean
   sent: boolean
   onJump: () => void
   onReset: () => void
 }) {
+  const engineName = ENGINE_OPTIONS.find((item) => item.id === engine)?.short ?? "deepseek-chat"
   if (!title) {
     return (
       <p className="text-xs text-[#8b909c]">
@@ -100,17 +108,34 @@ function CampaignLine({
     )
   }
   return (
-    <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#8b909c]">
-      <button type="button" className="max-w-full truncate font-medium text-[#6d4aff]" onClick={onJump}>
-        本轮爆款 · {title}
-      </button>
-      <span>已绑定 {products} 件商品</span>
-      <span>{hasCopy ? "文案已生成" : "文案未生成"}</span>
-      {sent && (
-        <button type="button" className="font-medium text-[#6d4aff]" onClick={onReset}>
-          开始新一轮
+    <div className="grid grid-cols-1 items-center gap-2 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+      <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+        <span className="text-[#8b909c]">当前话题</span>
+        <button type="button" className="max-w-[280px] truncate font-medium text-[#f97316]" onClick={onJump}>
+          {title}
         </button>
+        {productNames.length > 0 && (
+          <>
+            <span className="text-[#c5c8d0]">→</span>
+            <span className="min-w-0 truncate text-[#6b7080]">
+              {productNames.length} 件商品：{productNames.join("、")}
+            </span>
+          </>
+        )}
+        {sent && (
+          <button type="button" className="font-medium text-[#6d4aff]" onClick={onReset}>
+            开始新一轮
+          </button>
+        )}
+      </p>
+      {showGenerated ? (
+        <span className="justify-self-start rounded-full bg-[#16a34a] px-3 py-1 text-xs font-medium text-white lg:justify-self-center">
+          已生成 {copyCount}/3 个版本 · {engineName}
+        </span>
+      ) : (
+        <span />
       )}
-    </p>
+      <span />
+    </div>
   )
 }

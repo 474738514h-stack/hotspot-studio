@@ -64,6 +64,35 @@ const CURATED: Record<string, Record<string, Curated>> = {
     bottle: { score: 98, reason: "热搜就是大容量旋转瓶，这只旋盖杯是同类杯壶，不是那瓶水本身。" },
     coffee: { score: 64, reason: "饮料货架上的邻近选择，适合作为第二件。" },
   },
+  "no-nap": {
+    coffee: { score: 97, reason: "热点命中「午休、下班」场景，冷萃液正好填上下午那一截。" },
+    lamp: { score: 86, reason: "提前下班后的书桌时间，灯比空谈工时更具体。" },
+    bottle: { score: 82, reason: "连轴转的下午需要随时补水。" },
+    mask: { score: 76, reason: "下班提前了，护肤可以挪到四点以后。" },
+  },
+  typhoon: {
+    lamp: { score: 84, reason: "只讲在家照明，不消费台风本身。", risks: ["不得消费灾情或制造恐慌。"] },
+    bottle: { score: 78, reason: "日常备水，不写成救灾物资。", risks: ["不得消费灾情或制造恐慌。"] },
+    coffee: { score: 74, reason: "宅家的一杯咖啡，和路径预报无关。", risks: ["不得消费灾情或制造恐慌。"] },
+  },
+  hotpot: {
+    coffee: { score: 80, reason: "不排队的时候，在家也能有一杯热饮。" },
+    bottle: { score: 70, reason: "吃饭前后的补水，不硬蹭火锅。" },
+  },
+  major: {
+    "pen-set": { score: 90, reason: "专业讨论一热，文具检索会跟着动。" },
+    backpack: { score: 84, reason: "升学场景里，书包仍是家长会比较的一件。" },
+    lamp: { score: 78, reason: "宿舍和书桌还在，灯可以接着说。" },
+  },
+  plog: {
+    coffee: { score: 92, reason: "月度记录里出镜最多的是杯子和早餐。" },
+    lamp: { score: 80, reason: "桌面光源决定 plog 好不好看。" },
+    bottle: { score: 76, reason: "大容量杯是桌面照的固定道具。" },
+  },
+  charm: {
+    hoodie: { score: 82, reason: "城市体验热搜可以落到日常穿搭，不讲宏大叙事。" },
+    shoes: { score: 76, reason: "出门走一走的装备，只讲脚感。" },
+  },
   xiaozhan: {
     hoodie: { score: 92, reason: "路透穿搭讨论高。卫衣只谈版型，不谈明星。", risks: ["禁止「肖战同款」「代言」等未授权表述。"] },
     mask: { score: 83, reason: "妆造话题可以落到护肤，不能落到本人。", risks: ["禁止「肖战同款」「代言」等未授权表述。"] },

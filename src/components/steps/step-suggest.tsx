@@ -1,10 +1,10 @@
 "use client"
 
 import { ProductArt } from "@/components/product-art"
-import { ScoreRing } from "@/components/score-ring"
 import { Button } from "@/components/ui/button"
-import { formatPrice, formatSales } from "@/lib/format"
-import { topMatches } from "@/lib/matching"
+import { formatPrice } from "@/lib/format"
+import { matchProducts } from "@/lib/matching"
+import { ADAPTIVE_GRID_PRODUCT } from "@/lib/steps"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
 
@@ -22,73 +22,66 @@ export function StepSuggest() {
     )
   }
 
-  const ranked = topMatches(selectedNews, 12)
-  const strong = ranked.filter((item) => item.score >= 70)
-  const matches = (strong.length > 0 ? strong : ranked).slice(0, 6)
+  const ranked = matchProducts(selectedNews)
+  const strong = ranked.filter((item) => item.score >= 68)
+  const matches = strong.length >= 4 ? strong : ranked.slice(0, 8)
   const locked = selectedNews.risk === "blocked"
 
   return (
     <div>
-      <h1 className="text-xl font-semibold tracking-tight">Step 2 · 建议匹配商品</h1>
-      <p className="mt-1 text-sm text-[#6b7080]">系统按热点语义给出商品建议。采纳后进入商品库精修，或直接去写文案。</p>
-
-      <div className={cn("mt-4 rounded-xl border bg-white p-4", locked ? "border-orange-200" : "border-[#e6e8ee]")}>
-        <div className="text-[11px] text-[#8b909c]">当前热点</div>
-        <div className="mt-1 text-base font-semibold">{selectedNews.title}</div>
-        <p className="mt-1 text-sm leading-relaxed text-[#6b7080]">{selectedNews.summary}</p>
-        {locked && <p className="mt-2 text-sm text-orange-700">{selectedNews.riskNote} 下面的商品只作对照，不能采纳。</p>}
-        {selectedNews.risk === "caution" && <p className="mt-2 text-sm text-amber-700">{selectedNews.riskNote}</p>}
-      </div>
-
-      <div className="mt-4 flex items-center justify-between gap-3">
-        <h2 className="text-sm font-medium">系统建议 · 按匹配度</h2>
-        <Button variant="outline" size="sm" disabled={locked} onClick={() => adoptTop(2)}>
-          采纳前两名
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">Step 2 · 建议匹配商品</h1>
+          <p className="mt-1 text-sm text-[#6b7080]">系统基于热点语义与商品卖点自动推荐，点击卡片采纳或取消，可多选。</p>
+        </div>
+        <Button variant="outline" size="sm" disabled={locked} onClick={() => adoptTop(3)}>
+          一键采纳全部
         </Button>
       </div>
+      {locked && <p className="mt-3 rounded-lg bg-orange-50 px-3 py-2 text-sm text-orange-700">{selectedNews.riskNote} 下面的商品只作对照，不能采纳。</p>}
+      {selectedNews.risk === "caution" && <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-700">{selectedNews.riskNote}</p>}
 
-      <div className="mt-3 grid grid-cols-1 gap-3 xl:grid-cols-2">
+      <div className={cn("mt-4", ADAPTIVE_GRID_PRODUCT)}>
         {matches.map((match) => {
           const selected = state.selectedProductIds.includes(match.product.id)
+          const tone = match.score >= 90 ? "bg-emerald-50 text-emerald-700" : match.score >= 75 ? "bg-amber-50 text-amber-700" : "bg-[#f4f5f7] text-[#6b7080]"
           return (
-            <article key={match.product.id} className={cn("flex gap-3 rounded-xl border bg-white p-3", selected ? "border-[#6d4aff] ring-2 ring-[#6d4aff]/15" : "border-[#e6e8ee]")}>
-              <ProductArt id={match.product.id} className="size-28 shrink-0 rounded-lg" />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="text-[11px] text-[#8b909c]">{match.product.brand} · {match.product.shop}</div>
-                    <h3 className="text-sm font-semibold">{match.product.name}</h3>
-                  </div>
-                  <ScoreRing score={match.score} />
-                </div>
-                <div className="mt-1 flex items-baseline gap-2">
-                  <span className="text-base font-semibold text-[#1c1f2a]">{formatPrice(match.product.price)}</span>
-                  <span className="text-xs text-[#b0b5c0] line-through">{formatPrice(match.product.originalPrice)}</span>
-                  <span className="text-[11px] text-[#8b909c]">月销 {formatSales(match.product.sales)}</span>
-                </div>
-                <p className="mt-1.5 text-xs leading-relaxed text-[#4b5160]">{match.reasons[0]}</p>
-                {match.risks[0] && <p className="mt-1 text-[11px] text-amber-700">{match.risks[0]}</p>}
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {match.product.points.slice(0, 2).map((point) => (
-                    <span key={point} className="rounded-full bg-[#f6f7f9] px-2 py-0.5 text-[11px] text-[#4b5160]">{point}</span>
-                  ))}
-                </div>
-                <div className="mt-3">
-                  <Button size="sm" variant={selected ? "secondary" : "default"} disabled={locked} onClick={() => toggleProduct(match.product.id)}>
-                    {selected ? "已采纳" : "采纳"}
-                  </Button>
-                </div>
+            <button
+              key={match.product.id}
+              type="button"
+              disabled={locked}
+              onClick={() => toggleProduct(match.product.id)}
+              className={cn(
+                "flex h-full flex-col rounded-xl border bg-white p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed",
+                selected ? "border-[#6d4aff] ring-2 ring-[#6d4aff]/15" : "border-[#e6e8ee]",
+              )}
+            >
+              <span className={cn("w-fit rounded-md px-1.5 py-0.5 text-[11px] font-medium", tone)}>匹配度 {match.score}%</span>
+              <ProductArt id={match.product.id} className="mt-2 h-28 rounded-lg" />
+              <h3 className="mt-3 text-sm font-semibold">{match.product.name}</h3>
+              <div className="mt-1.5 flex flex-wrap gap-1">
+                {match.product.tags.slice(0, 3).map((tag) => (
+                  <span key={tag} className="rounded bg-[#f4f5f7] px-1.5 py-0.5 text-[11px] text-[#6b7080]">{tag}</span>
+                ))}
               </div>
-            </article>
+              <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-[#6d4aff]">{match.reasons[0]}</p>
+              <div className="mt-auto flex items-end justify-between pt-3">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-base font-semibold">{formatPrice(match.product.price)}</span>
+                  <span className="text-xs text-[#c0c4cc] line-through">{formatPrice(match.product.originalPrice)}</span>
+                </div>
+                <span className="text-[11px] text-[#9aa1ad]">{match.product.category}</span>
+              </div>
+            </button>
           )
         })}
       </div>
 
-      <div className="sticky bottom-3 z-10 mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#e6e8ee] bg-white/95 px-4 py-3 shadow-lg backdrop-blur">
-        <div className="text-sm text-[#4b5160]">已采纳 {state.selectedProductIds.length} 件</div>
+      <div className="sticky bottom-0 z-10 mt-4 flex w-full flex-wrap items-center justify-between gap-3 bg-[#f4f5f7]/95 py-3">
+        <div className="text-sm text-[#6b7080]">已采纳 {state.selectedProductIds.length} 件 · 可到 Step 3 从完整商品库补充</div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setStep(3)}>去商品库精修</Button>
-          <Button disabled={locked || state.selectedProductIds.length === 0} onClick={() => setStep(4)}>去写文案</Button>
+          <Button variant="outline" onClick={() => setStep(3)}>去商品库深度筛选</Button>
+          <Button disabled={locked || state.selectedProductIds.length === 0} onClick={() => setStep(4)}>下一步：创作文案</Button>
         </div>
       </div>
     </div>
