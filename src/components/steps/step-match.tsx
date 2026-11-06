@@ -130,7 +130,7 @@ export function StepMatch() {
           ))}
           <div className="ml-auto flex gap-2">
             <Button variant="outline" className={CHROME_BUTTON} onClick={() => setStep(2)}>返回建议</Button>
-            <Button variant="outline" className={CHROME_BUTTON} disabled={locked || selectedProducts.length === 0} onClick={() => setStep(4)}>去写文案</Button>
+            <Button disabled={locked || selectedProducts.length === 0} onClick={() => setStep(4)}>去写文案</Button>
           </div>
         </div>
       </div>

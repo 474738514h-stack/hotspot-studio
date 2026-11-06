@@ -1,5 +1,6 @@
 "use client"
 
+import { CheckIcon } from "lucide-react"
 import { ProductArt } from "@/components/product-art"
 import { Button } from "@/components/ui/button"
 import { Price } from "@/components/price"
@@ -53,10 +54,15 @@ export function StepSuggest() {
               disabled={locked}
               onClick={() => toggleProduct(match.product.id)}
               className={cn(
-                "flex h-full flex-col rounded-xl p-3 text-left transition hover:-translate-y-0.5 disabled:cursor-not-allowed",
+                "relative flex h-full flex-col rounded-xl p-3 text-left transition hover:-translate-y-0.5 disabled:cursor-not-allowed",
                 selected ? CARD_SELECTED : cn(CARD_IDLE, CARD_SHADOW, "hover:shadow-md"),
               )}
             >
+              {selected && (
+                <span className="absolute top-3 right-3 grid size-5 place-items-center rounded-full bg-[#6d4aff] text-white">
+                  <CheckIcon className="size-3" />
+                </span>
+              )}
               <span className={cn("w-fit rounded-md px-1.5 py-0.5 text-[11px] font-medium", tone)}>匹配度 {match.score}%</span>
               <ProductArt id={match.product.id} className="mt-2 h-28 rounded-lg" />
               <h3 className="mt-3 text-sm font-semibold">{match.product.name}</h3>
@@ -65,13 +71,15 @@ export function StepSuggest() {
                   <span key={tag} className="rounded bg-[#f4f5f7] px-1.5 py-0.5 text-[11px] text-[#6b7080]">{tag}</span>
                 ))}
               </div>
-              <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-[#6d4aff]">{match.reasons[0]}</p>
-              <div className="mt-auto flex items-end justify-between pt-3">
-                <div className="flex items-baseline gap-1.5">
-                  <Price value={match.product.price} className="text-base" />
-                  <Price value={match.product.originalPrice} strike className="text-xs text-[#c0c4cc]" />
+              <div className="mt-auto pt-3">
+                <p className="line-clamp-2 text-[12px] leading-relaxed text-[#6d4aff]">{match.reasons[0]}</p>
+                <div className="mt-2 flex items-end justify-between">
+                  <div className="flex items-baseline gap-1.5">
+                    <Price value={match.product.price} className="text-base" />
+                    <Price value={match.product.originalPrice} strike className="text-xs text-[#c0c4cc]" />
+                  </div>
+                  <span className="text-[11px] text-[#9aa1ad]">{match.product.category}</span>
                 </div>
-                <span className="text-[11px] text-[#9aa1ad]">{match.product.category}</span>
               </div>
             </button>
           )
@@ -81,12 +89,14 @@ export function StepSuggest() {
       </div>
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-[#e6e8ee] bg-[#f4f5f7] py-3">
         <div className="text-sm text-[#6b7080]">
-          <span className="font-semibold text-[#1c1f2a]">已采纳 {state.selectedProductIds.length} 件</span>
+          <span className="inline-flex items-center gap-1 rounded-md border border-[#d5d8e0] bg-white px-2 py-1 text-[#1c1f2a]">
+            已采纳 <span className="font-semibold text-[#6d4aff]">{state.selectedProductIds.length}</span> 件
+          </span>
           <span> · 可到 Step 3 从完整商品库补充</span>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" className={CHROME_BUTTON} onClick={() => setStep(3)}>去商品库深度筛选</Button>
-          <Button variant="outline" className={CHROME_BUTTON} disabled={locked || state.selectedProductIds.length === 0} onClick={() => setStep(4)}>下一步：创作文案</Button>
+          <Button disabled={locked || state.selectedProductIds.length === 0} onClick={() => setStep(4)}>下一步：创作文案</Button>
         </div>
       </div>
     </div>

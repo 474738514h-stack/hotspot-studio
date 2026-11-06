@@ -4,7 +4,7 @@ import { CheckIcon, RefreshCwIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatHeatIndex, formatReposts } from "@/lib/format"
 import { sourceLabel } from "@/lib/news"
-import { ADAPTIVE_GRID, CARD_IDLE, CARD_SELECTED, CARD_SHADOW, CHROME_BUTTON } from "@/lib/steps"
+import { ADAPTIVE_GRID, CARD_IDLE, CARD_SELECTED, CARD_SHADOW } from "@/lib/steps"
 import type { NewsItem } from "@/lib/types"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
@@ -108,7 +108,7 @@ export function StepNews() {
         <span className="min-w-0 truncate text-sm text-[#6b7080]">
           {selected ? `已选：${selected.title}` : "选择一条热点后可进入下一步"}
         </span>
-        <Button variant="outline" className={CHROME_BUTTON} disabled={!selected} onClick={() => setStep(2)}>
+        <Button disabled={!selected} onClick={() => setStep(2)}>
           下一步：建议匹配商品
         </Button>
       </div>
