@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { CheckIcon, CopyIcon, Loader2Icon, RefreshCwIcon } from "lucide-react"
+import { ArrowRightIcon, CopyIcon, Loader2Icon, RefreshCwIcon } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
@@ -44,12 +44,12 @@ export function StepCompose() {
   }
 
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto pb-6 [scrollbar-gutter:stable]">
+    <div className={cn("min-h-0 flex-1 [scrollbar-gutter:stable]", state.copies.length ? "flex flex-col overflow-hidden" : "overflow-y-auto pb-6")}>
       <h1 className="text-xl font-semibold tracking-tight">Step 4 · 创作文案</h1>
       <p className="mt-1 text-sm text-[#6b7080]">基于“热点 + 商品”组合，由 LLM 生成微博风格营销文案（多版本可微调）</p>
 
-      <div className="mt-4 grid w-full items-start gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="rounded-2xl border border-[#e6e8ee] bg-white p-4 lg:sticky lg:top-4">
+      <div className={cn("mt-4 grid w-full gap-4 lg:grid-cols-[320px_minmax(0,1fr)]", state.copies.length ? "min-h-0 flex-1 items-stretch" : "items-start")}>
+        <aside className={cn("rounded-2xl border border-[#e6e8ee] bg-white p-4", state.copies.length ? "max-h-full overflow-y-auto" : "lg:sticky lg:top-4")}>
           <div className="text-[13px] font-medium text-[#1c1f2a]">
             创作素材 <span className="ml-1 text-[11px] font-semibold tracking-[0.08em] text-[#b0b5c0]">INGREDIENTS</span>
           </div>
@@ -133,7 +133,7 @@ export function StepCompose() {
           </div>
         </aside>
 
-        <section>
+        <section className={cn(state.copies.length && "flex min-h-0 flex-col")}>
           {state.generating ? (
             <GenerateLoader />
           ) : state.copies.length === 0 ? (
@@ -200,8 +200,8 @@ function VersionBoard() {
   }
 
   return (
-    <article className="overflow-hidden rounded-xl border border-[#e6e8ee] bg-white">
-      <div className="flex gap-1 overflow-x-auto border-b border-[#eef0f3] px-2">
+    <article className="flex h-full min-h-[520px] flex-col overflow-hidden rounded-xl border border-[#e6e8ee] bg-white">
+      <div className="flex gap-1 overflow-x-auto border-b border-[#eef0f3] px-3 pt-2">
         {state.copies.map((item) => {
           const active = item.id === copy.id
           return (
@@ -213,8 +213,8 @@ function VersionBoard() {
                 setEditing(false)
               }}
               className={cn(
-                "shrink-0 border-b-2 px-3 py-3 text-sm",
-                active ? "border-[#6d4aff] font-medium text-[#6d4aff]" : "border-transparent text-[#6b7080] hover:text-[#1c1f2a]",
+                "shrink-0 rounded-t-lg px-3 py-2 text-sm",
+                active ? "bg-[#f3f0ff] font-medium text-[#6d4aff]" : "text-[#8b909c] hover:text-[#1c1f2a]",
               )}
             >
               {item.label} · {TONE_TAB[item.tone] ?? toneLabel(item.tone)}
@@ -222,22 +222,24 @@ function VersionBoard() {
           )
         })}
       </div>
-      <div className="px-5 py-4">
+      <div className="flex min-h-0 flex-1 flex-col px-4 py-4">
         {busy ? (
-          <div className="flex min-h-48 items-center gap-2 text-sm text-[#6b7080]">
+          <div className="flex min-h-48 flex-1 items-center gap-2 rounded-xl bg-[#f5f6fa] px-4 text-sm text-[#6b7080]">
             <Loader2Icon className="size-4 animate-spin text-[#6d4aff]" />
             正在重写这一版…
           </div>
         ) : editing ? (
-          <Textarea value={copy.text} onChange={(event) => updateCopy(copy.id, event.target.value)} className="min-h-64 font-sans text-sm leading-7" />
+          <Textarea value={copy.text} onChange={(event) => updateCopy(copy.id, event.target.value)} className="min-h-0 flex-1 font-sans text-sm leading-7" />
         ) : (
-          <p className="min-h-48 text-sm leading-8 whitespace-pre-wrap text-[#1c1f2a]">{copy.text}</p>
+          <div className="min-h-0 flex-1 overflow-y-auto rounded-xl bg-[#f5f6fa] px-4 py-4">
+            <p className="text-sm leading-8 whitespace-pre-wrap text-[#1c1f2a]">{copy.text}</p>
+          </div>
         )}
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="mt-3 flex flex-wrap items-center gap-2">
           <Button
             size="sm"
             variant="outline"
-            className="border-[#d5d8e0] bg-white text-[#1c1f2a]"
+            className="border-[#8eb4f5] bg-white text-[#3b6fd8]"
             onClick={() => {
               void copyText(copy.text).then((ok) => {
                 if (ok) toast.success("已复制微博文案")
@@ -252,38 +254,28 @@ function VersionBoard() {
             <RefreshCwIcon />
             重新生成
           </Button>
-          <Button size="sm" className="bg-[#16a34a] text-white hover:bg-[#15803d]" onClick={() => { setActiveCopy(copy.id); setStep(5) }}>
-            <CheckIcon />
+          <Button size="sm" className="bg-[#22a35a] text-white hover:bg-[#1b8a4b]" onClick={() => { setActiveCopy(copy.id); setStep(5) }}>
             采用此版本，去审核
+            <ArrowRightIcon />
           </Button>
-          <button type="button" className="ml-auto text-xs text-[#6d4aff]" onClick={() => setEditing((value) => !value)}>
-            {editing ? "完成编辑" : "编辑正文"}
+          <span className="ml-auto text-[12px] text-[#8b909c] tabular-nums">
+            共 {plain.length} 字 · {engine} · 服务端代理 · {seconds}s · ↑{inTokens} ↓{outTokens} tokens
+          </span>
+          <button type="button" className="text-xs text-[#6d4aff]" onClick={() => setEditing((value) => !value)}>
+            {editing ? "完成" : "编辑"}
           </button>
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-[#8b909c]">
-          <span className="tabular-nums text-[#4b5160]">字 {plain.length}</span>
-          <span>·</span>
-          <span>{engine}</span>
-          <span>· 服务端代理</span>
-          <span>· {seconds}s</span>
-          <span className="tabular-nums">· ↑{inTokens} ↓{outTokens} tokens</span>
-          <DropdownMenu>
-            <DropdownMenuTrigger className="text-[#6d4aff]">微调</DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => tweak(copy.id, "shorter")}>再短一点</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => tweak(copy.id, "less-emoji")}>少一点表情</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => tweak(copy.id, "more-cta")}>加强互动</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => tweak(copy.id, "no-price")}>去掉价格</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
         {issues.length > 0 ? (
-          <div className="mt-3 flex items-start justify-between gap-3 rounded-lg bg-[#fff6ee] px-3 py-2.5 text-[13px] text-[#c2410c]">
-            <div>
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-[#fff6ee] px-3 py-2.5 text-[13px] text-[#c2410c]">
+            <div className="min-w-0">
               <div className="font-medium">有 {issues.length} 项待优化 · 规则分 {score}</div>
-              <div className="mt-1 text-[12px] leading-relaxed text-[#d97706]">{issues[0]}</div>
+              <div className="mt-0.5 truncate text-[12px] text-[#d97706]">
+                {plain.length < min || plain.length > max
+                  ? `字数 ${min}-${max}:实际 ${plain.length} 字(不含空白),要求 ${min}-${max}`
+                  : issues[0]}
+              </div>
             </div>
-            <Button size="sm" variant="outline" className="shrink-0 border-[#f0d3b8] bg-white text-[#c2410c]" onClick={fix}>
+            <Button size="sm" variant="outline" className="shrink-0 border-[#e6e8ee] bg-white text-[#1c1f2a]" onClick={fix}>
               一键修正
             </Button>
           </div>
