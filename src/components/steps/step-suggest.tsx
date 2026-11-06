@@ -4,7 +4,7 @@ import { ProductArt } from "@/components/product-art"
 import { Button } from "@/components/ui/button"
 import { formatPrice } from "@/lib/format"
 import { matchProducts } from "@/lib/matching"
-import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED, CHROME_BUTTON } from "@/lib/steps"
+import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED, CARD_SHADOW, CHROME_BUTTON } from "@/lib/steps"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
 
@@ -54,7 +54,7 @@ export function StepSuggest() {
               onClick={() => toggleProduct(match.product.id)}
               className={cn(
                 "flex h-full flex-col rounded-xl p-3 text-left transition hover:-translate-y-0.5 disabled:cursor-not-allowed",
-                selected ? CARD_SELECTED : cn(CARD_IDLE, "hover:shadow-md"),
+                selected ? CARD_SELECTED : cn(CARD_IDLE, CARD_SHADOW, "hover:shadow-md"),
               )}
             >
               <span className={cn("w-fit rounded-md px-1.5 py-0.5 text-[11px] font-medium", tone)}>匹配度 {match.score}%</span>
@@ -95,7 +95,7 @@ export function StepSuggest() {
 
 export function EmptyBlock({ title, body, action, onAction }: { title: string; body: string; action: string; onAction: () => void }) {
   return (
-    <div className="grid min-h-0 flex-1 place-items-center rounded-xl border border-dashed border-[#d9dce3] bg-white px-6">
+    <div className={cn("grid min-h-0 flex-1 place-items-center rounded-xl border border-dashed border-[#d9dce3] bg-white px-6", CARD_SHADOW)}>
       <div className="max-w-md text-center">
         <h1 className="text-lg font-semibold">{title}</h1>
         <p className="mt-2 text-sm leading-relaxed text-[#6b7080]">{body}</p>

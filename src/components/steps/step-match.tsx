@@ -6,7 +6,7 @@ import { ProductArt } from "@/components/product-art"
 import { ScoreRing } from "@/components/score-ring"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED, CHROME_BUTTON } from "@/lib/steps"
+import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED, CARD_SHADOW, CHROME_BUTTON } from "@/lib/steps"
 import { formatPrice, formatSales } from "@/lib/format"
 import { matchProducts } from "@/lib/matching"
 import { PRODUCTS } from "@/lib/products"
@@ -55,7 +55,7 @@ export function StepMatch() {
       <h1 className="text-xl font-semibold tracking-tight">Step 3 · 匹配商品</h1>
       <p className="mt-1 text-sm text-[#6b7080]">在商品库里搜索、筛选，手动绑定最多 3 件。排在第一位的是主推。</p>
 
-      <div className="mt-4 flex flex-col gap-3 rounded-xl border border-[#e6e8ee] bg-white p-3">
+      <div className={cn("mt-4 flex flex-col gap-3 rounded-xl border border-[#e6e8ee] bg-white p-3", CARD_SHADOW)}>
         <div className="relative">
           <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-[#9aa1ad]" />
           <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索商品、品牌、卖点" className="pl-8" />
@@ -89,7 +89,7 @@ export function StepMatch() {
           const selected = state.selectedProductIds.includes(product.id)
           const meta = scoreMap.get(product.id)
           return (
-            <article key={product.id} className={cn("flex flex-col overflow-hidden rounded-xl", selected ? CARD_SELECTED : CARD_IDLE)}>
+            <article key={product.id} className={cn("flex flex-col overflow-hidden rounded-xl", selected ? CARD_SELECTED : cn(CARD_IDLE, CARD_SHADOW))}>
               <ProductArt id={product.id} className="h-36" />
               <div className="flex flex-1 flex-col p-3">
                 <div className="flex items-start justify-between gap-2">

@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { reviewCopy } from "@/lib/compliance"
-import { OPERATOR, WEIBO_ACCOUNT } from "@/lib/steps"
+import { CARD_SHADOW, OPERATOR, WEIBO_ACCOUNT } from "@/lib/steps"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
 import { EmptyBlock } from "@/components/steps/step-suggest"
@@ -66,7 +66,7 @@ export function StepReview() {
       </div>
 
       <div className="mt-4 grid w-full items-start gap-4 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
-        <div className="mx-auto w-full max-w-[390px] overflow-hidden rounded-xl border border-[#d9dce3] bg-white shadow-sm">
+        <div className={cn("mx-auto w-full max-w-[390px] overflow-hidden rounded-xl border border-[#d9dce3] bg-white", CARD_SHADOW)}>
           <div className="flex gap-3 px-4 pt-4">
             <div className="grid size-10 shrink-0 place-items-center rounded-full bg-[#ff8140] text-sm font-semibold text-white">热</div>
             <div className="min-w-0 flex-1">
@@ -101,7 +101,7 @@ export function StepReview() {
           )}
         </div>
 
-        <section className="rounded-xl border border-[#e6e8ee] bg-white p-5">
+        <section className={cn("rounded-xl border border-[#e6e8ee] bg-white p-5", CARD_SHADOW)}>
           <h2 className="text-sm font-semibold">发布信息</h2>
           <dl className="mt-3 divide-y divide-[#f0f1f4] text-sm">
             <InfoRow label="关联热点" value={selectedNews.title} />

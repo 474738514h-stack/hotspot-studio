@@ -15,7 +15,7 @@ import { ProductArt } from "@/components/product-art"
 import { reviewCopy } from "@/lib/compliance"
 import { copyText, formatPrice } from "@/lib/format"
 import { toneLabel } from "@/lib/copy/engine"
-import { ENGINE_OPTIONS } from "@/lib/steps"
+import { CARD_SHADOW, ENGINE_OPTIONS } from "@/lib/steps"
 import type { CopyLength, EmojiLevel } from "@/lib/types"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
@@ -32,7 +32,7 @@ export function StepCompose() {
   }
   if (selectedNews.risk === "blocked") {
     return (
-      <div className="rounded-xl border border-orange-200 bg-orange-50 p-6">
+      <div className={cn("rounded-xl border border-orange-200 bg-orange-50 p-6", CARD_SHADOW)}>
         <h1 className="text-lg font-semibold text-orange-800">这条热点不能生成营销文案</h1>
         <p className="mt-2 max-w-xl text-sm leading-relaxed text-orange-700">{selectedNews.riskNote}</p>
         <Button className="mt-4" variant="outline" onClick={() => setStep(1)}>换一条热点</Button>
@@ -49,7 +49,7 @@ export function StepCompose() {
       <p className="mt-1 text-sm text-[#6b7080]">基于“热点 + 商品”组合，由 LLM 生成微博风格营销文案（多版本可微调）</p>
 
       <div className="mt-4 grid w-full items-start gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="rounded-xl border border-[#e6e8ee] bg-white p-4">
+        <aside className={cn("rounded-xl border border-[#e6e8ee] bg-white p-4", CARD_SHADOW)}>
           <div className="text-[13px] font-medium text-[#1c1f2a]">
             创作素材 <span className="ml-1 text-[11px] font-semibold tracking-[0.08em] text-[#b0b5c0]">INGREDIENTS</span>
           </div>
@@ -151,7 +151,7 @@ export function StepCompose() {
           {state.generating ? (
             <GenerateLoader />
           ) : state.copies.length === 0 ? (
-            <div className="grid min-h-[480px] place-items-center rounded-xl border border-dashed border-[#d9dce3] bg-white">
+            <div className={cn("grid min-h-[480px] place-items-center rounded-xl border border-dashed border-[#d9dce3] bg-white", CARD_SHADOW)}>
               <div className="max-w-sm text-center">
                 <div className="text-sm font-medium">待生成</div>
                 <p className="mt-2 text-sm leading-relaxed text-[#6b7080]">左侧确认「热点 + 商品」组合与文案语调，点击「生成文案」即可产出 3 个版本的微博营销文案。</p>
@@ -214,7 +214,7 @@ function VersionBoard() {
   }
 
   return (
-    <article className="rounded-xl border border-[#e6e8ee] bg-white">
+    <article className={cn("rounded-xl border border-[#e6e8ee] bg-white", CARD_SHADOW)}>
       <div className="flex gap-1 overflow-x-auto border-b border-[#eef0f3] px-3 pt-2">
         {state.copies.map((item) => {
           const active = item.id === copy.id
@@ -313,7 +313,7 @@ function GenerateLoader() {
   }, [])
 
   return (
-    <div className="rounded-xl border border-[#e6e8ee] bg-white p-6" role="status" aria-live="polite">
+    <div className={cn("rounded-xl border border-[#e6e8ee] bg-white p-6", CARD_SHADOW)} role="status" aria-live="polite">
       <div className="flex items-center gap-2 text-sm font-medium">
         <Loader2Icon className="size-4 animate-spin text-[#6d4aff]" />
         正在生成微博文案

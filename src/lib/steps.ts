@@ -30,6 +30,7 @@ export const WEIBO_ACCOUNT = {
 export const PAGE_INSET = "px-6"
 export const ADAPTIVE_GRID = "grid w-full grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-3"
 export const ADAPTIVE_GRID_PRODUCT = "grid w-full grid-cols-[repeat(auto-fill,minmax(360px,1fr))] gap-3"
+export const CARD_SHADOW = "shadow-[0_1px_2px_rgba(28,31,42,0.04)]"
 export const CARD_IDLE = "border-2 border-[#e6e8ee] bg-white"
 export const CARD_SELECTED = "border-2 border-[#6d4aff] bg-[#f4f0ff] shadow-[0_0_0_3px_rgba(109,74,255,0.16)]"
 export const CHROME_BUTTON = "border-[#d5d8e0] bg-white text-[#1c1f2a] shadow-none hover:bg-[#f7f8fa]"

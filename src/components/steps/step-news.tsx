@@ -4,7 +4,7 @@ import { CheckIcon, RefreshCwIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatHeatIndex, formatReposts } from "@/lib/format"
 import { sourceLabel } from "@/lib/news"
-import { ADAPTIVE_GRID, CARD_IDLE, CARD_SELECTED, CHROME_BUTTON } from "@/lib/steps"
+import { ADAPTIVE_GRID, CARD_IDLE, CARD_SELECTED, CARD_SHADOW, CHROME_BUTTON } from "@/lib/steps"
 import type { NewsItem } from "@/lib/types"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
@@ -31,7 +31,7 @@ export function StepNews() {
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-[#e6e8ee] bg-white px-3 py-2.5 text-xs text-[#4b5160]">
+      <div className={cn("mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-[#e6e8ee] bg-white px-3 py-2.5 text-xs text-[#4b5160]", CARD_SHADOW)}>
         <span className="inline-flex items-center gap-1.5 font-medium text-emerald-600">
           <span className="size-1.5 rounded-full bg-emerald-500" />
           实时抓取
@@ -62,7 +62,7 @@ export function StepNews() {
               onClick={() => selectNews(news.id)}
               className={cn(
                 "relative flex h-full flex-col rounded-xl p-3.5 text-left transition hover:-translate-y-0.5",
-                selected ? CARD_SELECTED : cn(CARD_IDLE, "shadow-[0_1px_2px_rgba(28,31,42,0.04)] hover:shadow-md"),
+                selected ? CARD_SELECTED : cn(CARD_IDLE, CARD_SHADOW, "hover:shadow-md"),
                 !selected && news.risk === "blocked" && "border-l-orange-400",
               )}
             >
