@@ -41,7 +41,7 @@ export function StepCompose() {
   }
 
   return (
-    <div>
+    <div className="min-h-0 flex-1 overflow-y-auto pb-6 [scrollbar-gutter:stable]">
       <h1 className="text-xl font-semibold tracking-tight">Step 4 · 创作文案</h1>
       <p className="mt-1 text-sm text-[#6b7080]">按热点和商品生成 3 个微博版本。生成大约 1.5 秒，结果是可编辑的纯文本。</p>
 

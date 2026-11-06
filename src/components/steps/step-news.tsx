@@ -22,7 +22,8 @@ export function StepNews() {
   const selected = visibleNews.find((item) => item.id === state.selectedNewsId)
 
   return (
-    <div>
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="min-h-0 flex-1 overflow-y-auto pb-4 [scrollbar-gutter:stable]">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-[#1c1f2a]">Step 1 · 新闻抓取</h1>
@@ -102,7 +103,8 @@ export function StepNews() {
         })}
       </div>
 
-      <div className="sticky bottom-0 z-10 mt-4 flex w-full items-center justify-between gap-3 bg-[#f4f5f7]/95 py-3">
+      </div>
+      <div className="flex shrink-0 items-center justify-between gap-3 border-t border-[#e6e8ee] bg-[#f4f5f7] py-3">
         <span className="min-w-0 truncate text-sm text-[#6b7080]">
           {selected ? `已选：${selected.title}` : "选择一条热点后可进入下一步"}
         </span>

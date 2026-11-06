@@ -28,7 +28,8 @@ export function StepSuggest() {
   const locked = selectedNews.risk === "blocked"
 
   return (
-    <div>
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="min-h-0 flex-1 overflow-y-auto pb-4 [scrollbar-gutter:stable]">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">Step 2 · 建议匹配商品</h1>
@@ -77,7 +78,8 @@ export function StepSuggest() {
         })}
       </div>
 
-      <div className="sticky bottom-0 z-10 mt-4 flex w-full flex-wrap items-center justify-between gap-3 bg-[#f4f5f7]/95 py-3">
+      </div>
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-[#e6e8ee] bg-[#f4f5f7] py-3">
         <div className="text-sm text-[#6b7080]">已采纳 {state.selectedProductIds.length} 件 · 可到 Step 3 从完整商品库补充</div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setStep(3)}>去商品库深度筛选</Button>
@@ -90,7 +92,7 @@ export function StepSuggest() {
 
 export function EmptyBlock({ title, body, action, onAction }: { title: string; body: string; action: string; onAction: () => void }) {
   return (
-    <div className="grid min-h-[420px] place-items-center rounded-2xl border border-dashed border-[#d9dce3] bg-white px-6">
+    <div className="grid min-h-0 flex-1 place-items-center rounded-2xl border border-dashed border-[#d9dce3] bg-white px-6">
       <div className="max-w-md text-center">
         <h1 className="text-lg font-semibold">{title}</h1>
         <p className="mt-2 text-sm leading-relaxed text-[#6b7080]">{body}</p>

@@ -28,8 +28,8 @@ export const WEIBO_ACCOUNT = {
 }
 
 export const PAGE_INSET = "px-6"
-export const ADAPTIVE_GRID = "grid w-full grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3"
-export const ADAPTIVE_GRID_PRODUCT = "grid w-full grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3"
+export const ADAPTIVE_GRID = "grid w-full grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-3"
+export const ADAPTIVE_GRID_PRODUCT = "grid w-full grid-cols-[repeat(auto-fill,minmax(360px,1fr))] gap-3"
 
 export const GENERATE_DELAY_MS = 1500
 

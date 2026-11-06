@@ -50,7 +50,8 @@ export function StepMatch() {
   })
 
   return (
-    <div>
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="min-h-0 flex-1 overflow-y-auto pb-4 [scrollbar-gutter:stable]">
       <h1 className="text-xl font-semibold tracking-tight">Step 3 · 匹配商品</h1>
       <p className="mt-1 text-sm text-[#6b7080]">在商品库里搜索、筛选，手动绑定最多 3 件。排在第一位的是主推。</p>
 
@@ -114,7 +115,8 @@ export function StepMatch() {
         })}
       </div>
 
-      <div className="sticky bottom-0 z-10 mt-4 w-full rounded-none bg-[#f4f5f7]/95 py-3">
+      </div>
+      <div className="shrink-0 border-t border-[#e6e8ee] bg-[#f4f5f7] py-3">
         <div className="flex flex-wrap items-center gap-2">
           {selectedProducts.length === 0 && <span className="text-sm text-[#6b7080]">还没有绑定商品</span>}
           {selectedProducts.map((product, index) => (

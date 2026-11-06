@@ -31,9 +31,9 @@ function Shell() {
       <Header />
       <div className="flex min-h-0 flex-1">
         <Sidebar />
-        <main className="min-w-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           <MobileSteps />
-          <div className="w-full px-6 py-4">
+          <div className="flex min-h-0 w-full flex-1 flex-col px-6 pt-4">
             <CampaignLine
               title={selectedNews?.title}
               productNames={selectedProducts.map((item) => item.name)}
@@ -44,7 +44,7 @@ function Shell() {
               onJump={() => setStep(1)}
               onReset={resetCampaign}
             />
-            <div className="mt-3">
+            <div className="mt-3 flex min-h-0 flex-1 flex-col">
               {state.step === 1 && <StepNews />}
               {state.step === 2 && <StepSuggest />}
               {state.step === 3 && <StepMatch />}

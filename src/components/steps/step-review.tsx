@@ -47,7 +47,7 @@ export function StepReview() {
   const statusLabel = state.publish === "sent" ? "已模拟发布" : effectiveReview === "passed" ? "已通过" : effectiveReview === "rejected" ? "已退回" : "未审核"
 
   return (
-    <div>
+    <div className="min-h-0 flex-1 overflow-y-auto pb-6 [scrollbar-gutter:stable]">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">Step 5 · 审核并发送</h1>
