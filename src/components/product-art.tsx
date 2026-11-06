@@ -55,7 +55,7 @@ export function ProductArt({ id, className, thumb = false }: { id: string; class
     >
       <div className="absolute -top-6 -right-6 size-24 rounded-full bg-white/40" />
       <div className="absolute -bottom-8 -left-6 size-20 rounded-full bg-white/30" />
-      <div className="relative grid size-16 place-items-center rounded-2xl bg-white/80 shadow-sm">
+      <div className="relative grid size-16 place-items-center rounded-xl bg-white/80 shadow-sm">
         <Icon className="size-8" style={{ color: art.ink }} strokeWidth={1.6} />
       </div>
     </div>

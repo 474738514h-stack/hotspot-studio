@@ -32,7 +32,7 @@ export function StepCompose() {
   }
   if (selectedNews.risk === "blocked") {
     return (
-      <div className="rounded-2xl border border-orange-200 bg-orange-50 p-6">
+      <div className="rounded-xl border border-orange-200 bg-orange-50 p-6">
         <h1 className="text-lg font-semibold text-orange-800">这条热点不能生成营销文案</h1>
         <p className="mt-2 max-w-xl text-sm leading-relaxed text-orange-700">{selectedNews.riskNote}</p>
         <Button className="mt-4" variant="outline" onClick={() => setStep(1)}>换一条热点</Button>
@@ -49,13 +49,13 @@ export function StepCompose() {
       <p className="mt-1 text-sm text-[#6b7080]">基于“热点 + 商品”组合，由 LLM 生成微博风格营销文案（多版本可微调）</p>
 
       <div className="mt-4 grid w-full items-start gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="rounded-2xl border border-[#e6e8ee] bg-white p-4">
+        <aside className="rounded-xl border border-[#e6e8ee] bg-white p-4">
           <div className="text-[13px] font-medium text-[#1c1f2a]">
             创作素材 <span className="ml-1 text-[11px] font-semibold tracking-[0.08em] text-[#b0b5c0]">INGREDIENTS</span>
           </div>
           <div className="mt-3 rounded-xl bg-[#fbf4ee] px-3 py-3">
             <div className="text-[15px] font-semibold leading-snug text-[#1c1f2a]">{selectedNews.title}</div>
-            <div className="mt-1 text-[13px] text-[#e11d48]">#{selectedNews.hashtag}#</div>
+            <div className="mt-1 text-[13px] text-[#f97316]">#{selectedNews.hashtag}#</div>
           </div>
           <ul className="mt-3 space-y-2">
             {selectedProducts.map((product) => (

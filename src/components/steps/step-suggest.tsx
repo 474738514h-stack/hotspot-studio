@@ -95,7 +95,7 @@ export function StepSuggest() {
 
 export function EmptyBlock({ title, body, action, onAction }: { title: string; body: string; action: string; onAction: () => void }) {
   return (
-    <div className="grid min-h-0 flex-1 place-items-center rounded-2xl border border-dashed border-[#d9dce3] bg-white px-6">
+    <div className="grid min-h-0 flex-1 place-items-center rounded-xl border border-dashed border-[#d9dce3] bg-white px-6">
       <div className="max-w-md text-center">
         <h1 className="text-lg font-semibold">{title}</h1>
         <p className="mt-2 text-sm leading-relaxed text-[#6b7080]">{body}</p>

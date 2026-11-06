@@ -57,7 +57,7 @@ function Shell() {
       <WorkbenchSheets />
       {state.autoPhase !== null && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-[#1c1f2a]/25 px-4 backdrop-blur-[2px]">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl">
+          <div className="w-full max-w-sm rounded-xl bg-white p-5 shadow-xl">
             <div className="flex items-center gap-2 text-sm font-medium">
               <Loader2Icon className="size-4 animate-spin text-[#6d4aff]" />
               自动模式正在编排本轮
@@ -108,7 +108,7 @@ function CampaignLine({
     )
   }
   return (
-    <div className="grid grid-cols-1 items-center gap-2 rounded-xl bg-white px-4 py-3 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+    <div className="-mx-6 grid grid-cols-1 items-center gap-2 bg-white px-6 py-3 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
       <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs">
         <span className="text-[#8b909c]">当前话题</span>
         <button type="button" className="max-w-[280px] truncate font-medium text-[#f97316]" onClick={onJump}>
