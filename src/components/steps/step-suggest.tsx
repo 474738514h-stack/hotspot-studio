@@ -4,7 +4,7 @@ import { ProductArt } from "@/components/product-art"
 import { Button } from "@/components/ui/button"
 import { formatPrice } from "@/lib/format"
 import { matchProducts } from "@/lib/matching"
-import { ADAPTIVE_GRID_PRODUCT } from "@/lib/steps"
+import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED } from "@/lib/steps"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
 
@@ -53,8 +53,8 @@ export function StepSuggest() {
               disabled={locked}
               onClick={() => toggleProduct(match.product.id)}
               className={cn(
-                "flex h-full flex-col rounded-xl border bg-white p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed",
-                selected ? "border-[#6d4aff] ring-2 ring-[#6d4aff]/15" : "border-[#e6e8ee]",
+                "flex h-full flex-col rounded-xl p-3 text-left transition hover:-translate-y-0.5 disabled:cursor-not-allowed",
+                selected ? CARD_SELECTED : cn(CARD_IDLE, "hover:shadow-md"),
               )}
             >
               <span className={cn("w-fit rounded-md px-1.5 py-0.5 text-[11px] font-medium", tone)}>匹配度 {match.score}%</span>

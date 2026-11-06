@@ -4,7 +4,7 @@ import { CheckIcon, RefreshCwIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatHeatIndex, formatReposts } from "@/lib/format"
 import { sourceLabel } from "@/lib/news"
-import { ADAPTIVE_GRID } from "@/lib/steps"
+import { ADAPTIVE_GRID, CARD_IDLE, CARD_SELECTED } from "@/lib/steps"
 import type { NewsItem } from "@/lib/types"
 import { useWorkflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
@@ -61,19 +61,19 @@ export function StepNews() {
               type="button"
               onClick={() => selectNews(news.id)}
               className={cn(
-                "relative flex h-full flex-col rounded-xl border bg-white p-3.5 text-left shadow-[0_1px_2px_rgba(28,31,42,0.04)] transition hover:-translate-y-0.5 hover:shadow-md",
-                selected ? "border-[#6d4aff] ring-2 ring-[#6d4aff]/15" : "border-[#e6e8ee]",
-                news.risk === "blocked" && "border-l-[3px] border-l-orange-400",
+                "relative flex h-full flex-col rounded-xl p-3.5 text-left transition hover:-translate-y-0.5",
+                selected ? CARD_SELECTED : cn(CARD_IDLE, "shadow-[0_1px_2px_rgba(28,31,42,0.04)] hover:shadow-md"),
+                !selected && news.risk === "blocked" && "border-l-orange-400",
               )}
             >
               <div className="flex items-center gap-1.5 text-[11px]">
                 {news.trend === "up" && <span className="font-semibold text-emerald-600">升</span>}
                 {news.trend === "new" && <span className="rounded bg-emerald-50 px-1 font-semibold text-emerald-600">新</span>}
                 <span className="font-medium text-sky-600">实时</span>
-                <span className="truncate text-[#9aa1ad]">{metaLine(news)}</span>
+                <span className="min-w-0 flex-1 truncate text-[#9aa1ad]">{metaLine(news)}</span>
                 {selected && (
-                  <span className="ml-auto inline-flex shrink-0 items-center gap-0.5 font-medium text-[#6d4aff]">
-                    <CheckIcon className="size-3" />
+                  <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[12px] font-semibold text-[#6d4aff] ring-1 ring-[#d9d0ff]">
+                    <CheckIcon className="size-3.5" />
                     已选为爆款热点
                   </span>
                 )}

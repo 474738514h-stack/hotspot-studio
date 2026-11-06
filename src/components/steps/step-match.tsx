@@ -6,7 +6,7 @@ import { ProductArt } from "@/components/product-art"
 import { ScoreRing } from "@/components/score-ring"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ADAPTIVE_GRID_PRODUCT } from "@/lib/steps"
+import { ADAPTIVE_GRID_PRODUCT, CARD_IDLE, CARD_SELECTED } from "@/lib/steps"
 import { formatPrice, formatSales } from "@/lib/format"
 import { matchProducts } from "@/lib/matching"
 import { PRODUCTS } from "@/lib/products"
@@ -89,7 +89,7 @@ export function StepMatch() {
           const selected = state.selectedProductIds.includes(product.id)
           const meta = scoreMap.get(product.id)
           return (
-            <article key={product.id} className={cn("flex flex-col overflow-hidden rounded-xl border bg-white", selected ? "border-[#6d4aff] ring-2 ring-[#6d4aff]/15" : "border-[#e6e8ee]")}>
+            <article key={product.id} className={cn("flex flex-col overflow-hidden rounded-xl", selected ? CARD_SELECTED : CARD_IDLE)}>
               <ProductArt id={product.id} className="h-36" />
               <div className="flex flex-1 flex-col p-3">
                 <div className="flex items-start justify-between gap-2">

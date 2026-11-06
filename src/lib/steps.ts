@@ -30,6 +30,8 @@ export const WEIBO_ACCOUNT = {
 export const PAGE_INSET = "px-6"
 export const ADAPTIVE_GRID = "grid w-full grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-3"
 export const ADAPTIVE_GRID_PRODUCT = "grid w-full grid-cols-[repeat(auto-fill,minmax(360px,1fr))] gap-3"
+export const CARD_IDLE = "border-2 border-[#e6e8ee] bg-white"
+export const CARD_SELECTED = "border-2 border-[#6d4aff] bg-[#f4f0ff] shadow-[0_0_0_3px_rgba(109,74,255,0.16)]"
 
 export const GENERATE_DELAY_MS = 1500
 
